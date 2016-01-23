@@ -20,16 +20,16 @@
             </div>
 
             <div class="content">
-              <form class="padding10">
+              <form id="ordini" class="padding10">
                 <div class="input-control file full-size" data-role="input">
-                  <input type="file">
+                  <input type="file" id="file-ordini">
                   <button class="button">
                     <span class="mif-folder"></span>
                   </button>
                 </div>
 
-                <input type="submit" value="Elenco vendite">
-                <input type="submit" value="Conferma Amazon">
+                <button id="elenco-vendite" class="button">Elenco vendite</button>
+                <button id="conferma-amazon" class="button">Conferma Amazon</button>
               </form>
             </div>
           </div>
@@ -50,8 +50,8 @@
                   </button>
                 </div>
 
-                <input type="submit" value="Azzera corrente">
-                <input type="submit" value="Nuovo inventario">
+                <button class="button">Azzera corrente</button>
+                <button class="button">Nuovo inventario</button>
               </form>
             </div>
           </div>
@@ -59,6 +59,7 @@
       </div>
     </div>
 
+    <script src="../bower_components/papaparse/papaparse.min.js"></script>
     <script src="../bower_components/jquery/dist/jquery.min.js"></script>
     <script>
     if ('function' === typeof require) {
@@ -66,5 +67,6 @@
     }
     </script>
     <script src="../bower_components/metro/build/js/metro.min.js"></script>
+    <script src="amazin.js"></script>
   </body>
 </html>
