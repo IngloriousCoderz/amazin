@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>Amazin</title>
-    <link rel="stylesheet" href="/bower_components/metro/build/css/metro.min.css">
-    <link rel="stylesheet" href="/bower_components/metro/build/css/metro-icons.min.css">
+    <link rel="stylesheet" href="../bower_components/metro/build/css/metro.min.css">
+    <link rel="stylesheet" href="../bower_components/metro/build/css/metro-icons.min.css">
   </head>
   <body>
     <div class="app-bar">
@@ -59,7 +59,12 @@
       </div>
     </div>
 
-    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="/bower_components/metro/build/js/metro.min.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script>
+    if ('function' === typeof require) {
+      window.$ = window.jQuery = require('../bower_components/jquery/dist/jquery.min.js');
+    }
+    </script>
+    <script src="../bower_components/metro/build/js/metro.min.js"></script>
   </body>
 </html>
