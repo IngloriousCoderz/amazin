@@ -1,10 +1,107 @@
 var Papa = require('../bower_components/papaparse/papaparse.min');
 var $ = jQuery = require('../bower_components/jquery/dist/jquery.min');
 var metro = require('../bower_components/metro/build/js/metro.min');
+var XLSX = require('xlsx');
 var jsonFile = require('jsonfile');
+var filesaver = require('filesaver.js');
 var moment = require('moment');
 
-var cachePath = 'cache/';
+function getFileName(name, type) {
+  return name + '_' + moment().format('YYYY-MM-DD') + '.' + type;
+};
+
+function orders2Sheet(data, opts) {
+  var ws = {};
+
+  data.forEach(function(item, index) {
+    var cell = {
+      c: 0,
+      r: index,
+      v: parseInt(moment().format('X')),
+      t: 'n',
+      // z: XLSX.SSF._table[14],
+      w: moment().format('YYYY-MM-DD')
+    };
+    ws[XLSX.utils.encode_cell({
+      c: cell.c,
+      r: cell.r
+    })] = cell;
+
+    cell = {
+      c: 1,
+      r: index,
+      v: item['product-name'],
+      t: 's'
+    };
+    ws[XLSX.utils.encode_cell({
+      c: cell.c,
+      r: cell.r
+    })] = cell;
+  });
+
+  var range = {
+    s: {
+      c: 2 - 1,
+      r: data.length - 1
+    },
+    e: {
+      c: 0,
+      r: 0
+    }
+  }
+  ws['!range'] = range;
+  ws['!ref'] = XLSX.utils.encode_range(range);
+  return ws;
+}
+
+function orders2Csv(data) {
+  var orders = [];
+  data.forEach(function(item, index) {
+    var name = item['recipient-name'];
+    var addr1 = item['ship-address-1'];
+    var addr2 = item['ship-address-2'];
+    var addr3 = item['ship-address-3'];
+    var city = item['ship-city'];
+    var state = item['ship-state'];
+    var zip = item['ship-postal-code'];
+    var country = item['ship-country'];
+    var phone = item['ship-phone-number'];
+
+    locality = city;
+    if (zip.length > 0) {
+      locality = zip + ' ' + locality;
+    }
+    if (state.length > 0) {
+      locality += ' (' + state + ')';
+    }
+
+    orders.push([
+      moment().format('YYYY-MM-DD'),
+      item['product-name'],
+      item['sku'],
+      item['item-price'],
+      (name.length > 0 ? name + '\n' : '') +
+      (addr1.length > 0 ? addr1 + '\n' : '') +
+      (addr2.length > 0 ? addr2 + '\n' : '') +
+      (addr3.length > 0 ? addr3 + '\n' : '') +
+      locality + '\n' +
+      (country.length > 0 ? country + '\n' : '') +
+      (phone.length > 0 ? phone + '\n' : ''),
+      item['shipping-price'],
+      item['order-id']
+    ]);
+  });
+  return orders;
+}
+
+function s2ab(s) {
+  var buf = new ArrayBuffer(s.length);
+  var view = new Uint8Array(buf);
+  for (var i = 0; i < s.length; i++) {
+    view[i] = s.charCodeAt(i) & 0xFF;
+  }
+  return buf;
+}
 
 $(function() {
   'use strict';
@@ -15,23 +112,64 @@ $(function() {
       dynamicTyping: true,
       skipEmptyLines: true,
 
-      before: function(file, inputElem) {
-        console.log(file, inputElem);
-      },
-
       complete: function(results, file) {
-        jsonFile.writeFile(cachePath + 'ordini_' + moment().format('YYYY-MM-DD') + '.json', results, function(err) {
-          console.log(err);
+        jsonFile.writeFile('cache/' + getFileName('ordini', 'json'), results, function(err) {
+          if (err) {
+            console.log(err);
+          }
         });
       },
 
       error: function(error, file, inputElem, reason) {
-        console.err(error, file, inputElem, reason);
+        console.log(error, file, inputElem, reason);
       }
     });
   });
 
-  $('#ordini').on('click', 'button', function(event) {
+  $('#ordini').on('click', 'button#elenco-vendite', function(event) {
     event.preventDefault();
+    var workbook = XLSX.readFile('test/samples/file lavoro.xls');
+    console.log('original workbook', workbook);
+    // return;
+    jsonFile.readFile('cache/' + getFileName('ordini', 'json'), function(err, obj) {
+      console.log('orders json', obj);
+
+      var csv = Papa.unparse(orders2Csv(obj.data), {
+        quotes: true,
+        delimiter: ';'
+      });
+      console.log('orders csv', csv);
+
+      var filename = getFileName('elenco-vendite', 'csv');
+      filesaver.saveAs(new Blob([s2ab(csv)], {
+        type: "application/octet-stream"
+      }), filename);
+      return
+
+      // workbook.SheetNames = ['Vendite'];
+      // workbook.Sheets['Vendite'] = convertOrders(obj.data);
+
+      var workbook = {
+        Directory: ['Vendite'],
+        SheetNames: ['Vendite'],
+        Sheets: {
+          Vendite: orders2Sheet(obj.data)
+        }
+      }
+
+      console.log('output workbook', workbook);
+
+      var filename = getFileName('elenco-vendite', 'xlsx');
+      XLSX.writeFile(workbook, filename);
+
+      // var output = XLSX.write(workbook, {
+      //   bookType: 'xlsb',
+      //   bookSST: true,
+      //   type: 'binary'
+      // });
+      // filesaver.saveAs(new Blob([s2ab(output)], {
+      //   type: "application/octet-stream"
+      // }), filename);
+    });
   });
 });
