@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/IngloriousCoderz/amazin#readme",
   "dependencies": {
-    "electron-prebuilt": "^0.36.5"
+    "electron-prebuilt": "^0.36.5",
+    "jsonfile": "^2.2.3",
+    "moment": "^2.11.1"
   }
 }
