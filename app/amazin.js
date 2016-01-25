@@ -54,8 +54,8 @@ function orders2Sheet(data, opts) {
   return ws;
 }
 
-function orders2Csv(data) {
-  var orders = [];
+function orders2WorkItems(data) {
+  var workItems = [];
   data.forEach(function(item, index) {
     var name = item['recipient-name'];
     var addr1 = item['ship-address-1'];
@@ -75,12 +75,11 @@ function orders2Csv(data) {
       locality += ' (' + state + ')';
     }
 
-    orders.push([
+    workItems.push([
       moment().format('YYYY-MM-DD'),
       item['product-name'],
       item['sku'],
-      item['item-price'],
-      (name.length > 0 ? name + '\n' : '') +
+      item['item-price'], (name.length > 0 ? name + '\n' : '') +
       (addr1.length > 0 ? addr1 + '\n' : '') +
       (addr2.length > 0 ? addr2 + '\n' : '') +
       (addr3.length > 0 ? addr3 + '\n' : '') +
@@ -91,7 +90,24 @@ function orders2Csv(data) {
       item['order-id']
     ]);
   });
-  return orders;
+  return workItems;
+}
+
+function orders2shippingConfirm(data) {
+  var shipping = [];
+  data.forEach(function(item, index) {
+    shipping.push([
+      item['order-id'],
+      '',
+      '',
+      moment().format('YYYY-MM-DD'),
+      'Poste Italiane',
+      '',
+      'Priority',
+      ''
+    ]);
+  });
+  return shipping;
 }
 
 function s2ab(s) {
@@ -128,23 +144,22 @@ $(function() {
 
   $('#ordini').on('click', 'button#elenco-vendite', function(event) {
     event.preventDefault();
-    var workbook = XLSX.readFile('test/samples/file lavoro.xls');
-    console.log('original workbook', workbook);
-    // return;
-    jsonFile.readFile('cache/' + getFileName('ordini', 'json'), function(err, obj) {
-      console.log('orders json', obj);
 
-      var csv = Papa.unparse(orders2Csv(obj.data), {
+    // var workbook = XLSX.readFile('test/samples/file lavoro.xls');
+    // console.log('original workbook', workbook);
+    // return;
+
+    jsonFile.readFile('cache/' + getFileName('ordini', 'json'), function(err, obj) {
+      var csv = Papa.unparse(orders2WorkItems(obj.data), {
         quotes: true,
-        delimiter: ';'
+        delimiter: ';'//'\t'
       });
-      console.log('orders csv', csv);
 
       var filename = getFileName('elenco-vendite', 'csv');
       filesaver.saveAs(new Blob([s2ab(csv)], {
         type: "application/octet-stream"
       }), filename);
-      return
+      return;
 
       // workbook.SheetNames = ['Vendite'];
       // workbook.Sheets['Vendite'] = convertOrders(obj.data);
@@ -170,6 +185,23 @@ $(function() {
       // filesaver.saveAs(new Blob([s2ab(output)], {
       //   type: "application/octet-stream"
       // }), filename);
+    });
+  });
+
+  $('#ordini').on('click', 'button#conferma-spedizioni', function(event) {
+    event.preventDefault();
+
+    jsonFile.readFile('cache/' + getFileName('ordini', 'json'), function(err, obj) {
+      var csv = Papa.unparse(orders2shippingConfirm(obj.data), {
+        quotes: true,
+        delimiter: '\t'
+      });
+
+      var filename = getFileName('conferma-spedizioni', 'csv');
+      filesaver.saveAs(new Blob([s2ab(csv)], {
+        type: "application/octet-stream"
+      }), filename);
+      return;
     });
   });
 });
