@@ -125,7 +125,7 @@ $(function() {
   $('#ordini').on('change', '#file-ordini', function(event) {
     Papa.parse(event.target.files[0], {
       header: true,
-      dynamicTyping: true,
+      dynamicTyping: false,
       skipEmptyLines: true,
 
       complete: function(results, file) {
