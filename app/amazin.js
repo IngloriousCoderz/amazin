@@ -1,10 +1,13 @@
-var Papa = require('../bower_components/papaparse/papaparse.min');
-var $ = jQuery = require('../bower_components/jquery/dist/jquery.min');
-var metro = require('../bower_components/metro/build/js/metro.min');
-var XLSX = require('xlsx');
-var jsonFile = require('jsonfile');
-var filesaver = require('filesaver.js');
+require('metro/build/css/metro.min.css!');
+require('metro/build/css/metro-icons.min.css!');
+
+var $ = require('jquery');
+var metro = require('metro/build/js/metro.min.js');
+var Papa = require('papaparse');
 var moment = require('moment');
+var jsonFile = require('jsonfile');
+var XLSX = require('xlsx');
+var filesaver = require('filesaver.js');
 
 function getFileName(name, type) {
   return name + '_' + moment().format('YYYY-MM-DD') + '.' + type;

@@ -15,8 +15,5 @@
     "test",
     "tests"
   ],
-  "dependencies": {
-    "metro": "~3.0.13",
-    "papaparse": "papa.parse#~4.1.2"
-  }
+  "dependencies": {}
 }
