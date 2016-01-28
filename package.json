@@ -24,8 +24,12 @@
   "homepage": "https://github.com/IngloriousCoderz/amazin#readme",
   "dependencies": {},
   "devDependencies": {
+    "del": "^2.2.0",
     "electron-prebuilt": "^0.36.5",
     "gulp": "^3.9.0",
+    "gulp-jspm": "^0.5.6",
+    "gulp-load-plugins": "^1.2.0",
+    "gulp-sourcemaps": "^1.6.0",
     "jspm": "^0.16.25"
   },
   "jspm": {
