@@ -10,11 +10,11 @@ var suppliers = {
 };
 
 module.exports = {
-  createInventory: function(supplier, type) {
+  createStock: function(supplier, type) {
     jsonFile.readFile('cache/' + files.getFileName(supplier + '_' + type, 'json'), function(err, obj) {
-      var csv = Papa.unparse(suppliers[supplier].createInventory(obj.data, type), {
-        quotes: true,
-        delimiter: ';' //'\t'
+      var csv = Papa.unparse(suppliers[supplier].createStock(obj.data, type), {
+        quotes: false,
+        delimiter: '\t'
       });
 
       var filename = files.getFileName('inventario_' + supplier + '_' + type, 'txt');

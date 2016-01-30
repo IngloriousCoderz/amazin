@@ -40,5 +40,12 @@ $(function() {
     files.readAndCache(file, supplier + '_' + type);
   });
 
+  $('#stock').on('click', 'button#new-stock', function(event) {
+    event.preventDefault();
+    var supplier = $('#stock select#supplier').val();
+    var type = $('#stock select#type').val();
+    stock.createStock(supplier, type);
+  });
+
   showSupplierContent($('#stock select#supplier').val());
 });

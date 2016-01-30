@@ -4,13 +4,15 @@ var filesaver = require('filesaver.js');
 var files = require('./files');
 
 var BARCODE_BLACKLIST = [
+  'rental',
   'EX RENTAL'
 ];
 var MARKUP = 2;
 
 module.exports = {
-  createInventory: function(data, type) {
-    var inventory = [
+  createStock: function(data, type) {
+    var stock = [];
+    stock.push([
       'sku',
       'product-id',
       'product-id-type',
@@ -24,34 +26,39 @@ module.exports = {
       'expedited-shipping',
       'will-ship-internationally',
       'fulfillment-center-id'
-    ];
+    ]);
 
     data.forEach(function(item, index) {
-      var barcode = data['barcode'];
-      var quantity = data['q.tà disp.'];
-      var price = data[' prezzo '];
+      var barcode = item['barcode'];
+      var quantity = item['q.tà disp.'] || item['q,tà disp.'];
+      var price = item[' prezzo '];
 
       var blacklisted = false;
       BARCODE_BLACKLIST.forEach(function(stopword, index) {
-        if (barcode.indexOf(stopword) >= 0) {
+        if (barcode.toLowerCase().indexOf(stopword.toLowerCase()) >= 0) {
           blacklisted = true;
           return;
         }
       });
       if (blacklisted) return;
 
-      barcode = barcode.split(' ')[0];
-      barcode = barcode.replace(/[^\d]/g, '');
+      var barcodes = /\d+/.exec(barcode);
+      if (barcodes === null) return;
+      barcode = barcodes[0];
+      if (barcode === undefined) return;
+      for (i = barcode.length; i < 13; i++) {
+        barcode = '0' + barcode;
+      }
 
-      if (quantity <= 0) return;
+      if (isNaN(quantity) || quantity <= 0) return;
       if (quantity >= 1 && quantity <= 5) quantity = 1;
       else if (quantity >= 6 && quantity <= 10) quantity = 2;
       else if (quantity >= 11 && quantity <= 20) quantity = 3;
       else if (quantity > 20) quantity = 5;
 
-      price = parseInt(price.replace(/[^\d]g/, '')) * MARKUP;
+      price = price.replace(/[^\d\.]/g, '') * MARKUP;
 
-      inventory.push([
+      stock.push([
         barcode + '_NADA' + (type === 'dvd' ? 'OK' : ''),
         barcode,
         4,
@@ -68,6 +75,6 @@ module.exports = {
       ]);
     });
 
-    return inventory;
+    return stock;
   }
 };
