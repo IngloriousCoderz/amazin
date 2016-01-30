@@ -108,31 +108,7 @@ function orders2Sheet(data, opts) {
 }
 
 module.exports = {
-  cacheFile: function(file) {
-    Papa.parse(file, {
-      header: true,
-      dynamicTyping: false,
-      skipEmptyLines: true,
-
-      complete: function(results, file) {
-        jsonFile.writeFile('cache/' + files.getFileName('ordini', 'json'), results, function(err) {
-          if (err) {
-            console.log(err);
-          }
-        });
-      },
-
-      error: function(error, file, inputElem, reason) {
-        console.log(error, file, inputElem, reason);
-      }
-    });
-  },
-
   createSalesList: function() {
-    // var workbook = XLSX.readFile('test/samples/file lavoro.xls');
-    // console.log('original workbook', workbook);
-    // return;
-
     jsonFile.readFile('cache/' + files.getFileName('ordini', 'json'), function(err, obj) {
       var csv = Papa.unparse(orders2SalesList(obj.data), {
         quotes: true,
@@ -143,33 +119,6 @@ module.exports = {
       filesaver.saveAs(new Blob([files.string2byteArray(csv)], {
         type: "application/octet-stream"
       }), filename);
-
-      return;
-
-      // workbook.SheetNames = ['Vendite'];
-      // workbook.Sheets['Vendite'] = convertOrders(obj.data);
-
-      var workbook = {
-        Directory: ['Vendite'],
-        SheetNames: ['Vendite'],
-        Sheets: {
-          Vendite: orders2Sheet(obj.data)
-        }
-      }
-
-      console.log('output workbook', workbook);
-
-      var filename = getFileName('elenco-vendite', 'xlsx');
-      XLSX.writeFile(workbook, filename);
-
-      // var output = XLSX.write(workbook, {
-      //   bookType: 'xlsb',
-      //   bookSST: true,
-      //   type: 'binary'
-      // });
-      // filesaver.saveAs(new Blob([s2ab(output)], {
-      //   type: "application/octet-stream"
-      // }), filename);
     });
   },
 

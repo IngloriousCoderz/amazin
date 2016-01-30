@@ -1,8 +1,45 @@
 var moment = require('moment');
+var XLSX = require('xlsx');
+var Papa = require('papaparse');
+var jsonFile = require('jsonfile');
 
 module.exports = {
   getFileName: function(name, type) {
     return name + '_' + moment().format('YYYY-MM-DD') + '.' + type;
+  },
+
+  readAndCache: function(file, name) {
+    var self = this;
+    if (file.type === 'application/vnd.ms-excel') {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var data = e.target.result;
+        var workbook = XLSX.read(data, {
+          type: 'binary'
+        });
+        self.readAndCache(XLSX.utils.sheet_to_csv(workbook.Sheets[workbook.SheetNames[0]]), name);
+      }
+      reader.readAsBinaryString(file);
+      return;
+    }
+
+    Papa.parse(file, {
+      header: true,
+      dynamicTyping: false,
+      skipEmptyLines: true,
+
+      complete: function(results, file) {
+        jsonFile.writeFile('cache/' + self.getFileName(name, 'json'), results, function(err) {
+          if (err) {
+            console.log(err);
+          }
+        });
+      },
+
+      error: function(error, file, inputElem, reason) {
+        console.log(error, file, inputElem, reason);
+      }
+    });
   },
 
   string2byteArray: function(s) {
