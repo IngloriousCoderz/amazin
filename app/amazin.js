@@ -36,7 +36,16 @@ $(function() {
   $('#stock').on('change', 'input#file-stock', function(event) {
     var file = event.target.files[0];
     var supplier = $('#stock select#supplier').val();
+
+    if (file.name.toLowerCase().indexOf('dvd') >= 0) {
+      $('#stock select#type').val('dvd');
+    } else if (file.name.toLowerCase().indexOf('br') >= 0) {
+      $('#stock select#type').val('br');
+    } else if (file.name.toLowerCase().indexOf('a&r') >= 0) {
+      $('#stock select#type').val('ar');
+    }
     var type = $('#stock select#type').val();
+
     files.readAndCache(file, supplier + '_' + type);
   });
 

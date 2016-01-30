@@ -34,8 +34,12 @@
                 </button>
               </div>
 
-              <button id="elenco-vendite" class="button">Elenco vendite</button>
-              <button id="conferma-spedizioni" class="button">Conferma spedizioni</button>
+              <div class="grid">
+                <div class="row cells2">
+                  <button id="elenco-vendite" class="button cell">Elenco vendite</button>
+                  <button id="conferma-spedizioni" class="button cell">Conferma spedizioni</button>
+                </div>
+              </div>
             </form>
           </div>
         </div>
@@ -49,41 +53,47 @@
 
           <div class="content">
             <form id="stock" class="padding10">
-              <label for="supplier">Fornitore</label>
-              <div class="input-control select">
-                <select id="supplier">
-                  <option value="nada" selected>Nadalin</option>
-                  <option value="other">Altro</option>
-                </select>
-              </div>
+              <div class="grid no-margin">
+                <div class="row cells3">
+                  <label for="supplier" class="cell padding10">Fornitore</label>
+                  <div class="input-control select cell colspan2">
+                    <select id="supplier">
+                      <option value="nada" selected>Nadalin</option>
+                      <option value="other">Altro</option>
+                    </select>
+                  </div>
+                </div>
 
-              <div id="nada" class="supplier">
-                <label for="type">Tipo</label>
-                <div class="input-control select">
-                  <select id="type">
-                    <option value="dvd">DVD</option>
-                    <option value="br">Blu-ray</option>
-                    <option value="ar">A&amp;R</option>
-                  </select>
+                <div id="nada" class="supplier">
+                  <div class="row cells3">
+                    <label for="type" class="cell padding10">Tipo</label>
+                    <div class="input-control select cell colspan2">
+                      <select id="type">
+                        <option value="dvd">DVD</option>
+                        <option value="br">Blu-ray</option>
+                        <option value="ar">A&amp;R</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="input-control file full-size" data-role="input">
+                    <input type="file" id="file-stock">
+                    <button class="button">
+                      <span class="mif-folder"></span>
+                    </button>
+                  </div>
+
+                  <button class="button">Azzera corrente</button>
+                  <fieldset id="new-stock">
+                    <legend>Nuovo inventario</legend>
+                    <button id="it" class="button">IT</button>
+                    <button id="uk" class="button">UK</button>
+                    <button id="fr" class="button">FR</button>
+                    <button id="de" class="button">DE</button>
+                    <button id="es" class="button">ES</button>
+                  </fieldset>
                 </div>
               </div>
-
-              <div class="input-control file full-size" data-role="input">
-                <input type="file" id="file-stock">
-                <button class="button">
-                  <span class="mif-folder"></span>
-                </button>
-              </div>
-
-              <button class="button">Azzera corrente</button>
-              <fieldset id="new-stock">
-                <legend>Nuovo inventario</legend>
-                <button id="it" class="button">IT</button>
-                <button id="uk" class="button">UK</button>
-                <button id="fr" class="button">FR</button>
-                <button id="de" class="button">DE</button>
-                <button id="es" class="button">ES</button>
-              </fieldset>
             </form>
           </div>
         </div>
