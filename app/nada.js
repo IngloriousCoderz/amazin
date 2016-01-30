@@ -10,7 +10,7 @@ var BARCODE_BLACKLIST = [
 var MARKUP = 2;
 
 module.exports = {
-  createStock: function(data, type) {
+  createStock: function(data, type, market) {
     var stock = [];
     stock.push([
       'sku',
@@ -56,22 +56,58 @@ module.exports = {
       else if (quantity >= 11 && quantity <= 20) quantity = 3;
       else if (quantity > 20) quantity = 5;
 
+      var sku = barcode + '_NADA' + (type === 'dvd' ? 'OK' : '');
+      var productIdType = 4;
+
       price = price.replace(/[^\d\.]/g, '') * MARKUP;
+      price = price.toFixed(2);
+      if (market !== 'uk') {
+        price = price.replace('.', ',');
+      }
+
+      var minimumSellerAllowedPrice = '';
+      var maximumSellerAllowedPrice = '';
+      var itemCondition = 11;
+      var addDelete = 'a';
+      var itemNote = 'Nuovo, originale e sigillato';
+      if (market === 'fr') {
+        itemNote = 'Neuf';
+      } else if (market !== 'it') {
+        itemNote = '';
+      }
+
+      var expeditedShipping = 'N';
+      if (market === 'it') {
+        expeditedShipping = 23;
+      }
+
+      var willShipInternationally = 26;
+      if (market === 'uk') {
+        willShipInternationally = 6;
+      } else if (market === 'fr') {
+        willShipInternationally = 19;
+      } else if (market === 'de') {
+        willShipInternationally = 10;
+      } else if (market === 'es') {
+        willShipInternationally = 30;
+      }
+
+      var fulfillmentCenterId = '';
 
       stock.push([
-        barcode + '_NADA' + (type === 'dvd' ? 'OK' : ''),
+        sku,
         barcode,
-        4,
+        productIdType,
         price,
-        '',
-        '',
-        11,
+        minimumSellerAllowedPrice,
+        maximumSellerAllowedPrice,
+        itemCondition,
         quantity,
-        'a',
-        'Nuovo, originale e sigillato',
-        23,
-        26,
-        ''
+        addDelete,
+        itemNote,
+        expeditedShipping,
+        willShipInternationally,
+        fulfillmentCenterId
       ]);
     });
 

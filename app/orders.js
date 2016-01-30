@@ -109,7 +109,7 @@ function orders2Sheet(data, opts) {
 
 module.exports = {
   createSalesList: function() {
-    jsonFile.readFile('cache/' + files.getFileName('ordini', 'json'), function(err, obj) {
+    jsonFile.readFile('cache/' + files.getFileName('orders', 'json'), function(err, obj) {
       var csv = Papa.unparse(orders2SalesList(obj.data), {
         quotes: true,
         delimiter: ';' //'\t'
@@ -123,7 +123,7 @@ module.exports = {
   },
 
   createShippingConfirmation: function() {
-    jsonFile.readFile('cache/' + files.getFileName('ordini', 'json'), function(err, obj) {
+    jsonFile.readFile('cache/' + files.getFileName('orders', 'json'), function(err, obj) {
       var csv = Papa.unparse(orders2shippingConfirmation(obj.data), {
         quotes: true,
         delimiter: '\t'

@@ -40,11 +40,12 @@ $(function() {
     files.readAndCache(file, supplier + '_' + type);
   });
 
-  $('#stock').on('click', 'button#new-stock', function(event) {
+  $('#stock').on('click', '#new-stock button', function(event) {
     event.preventDefault();
     var supplier = $('#stock select#supplier').val();
     var type = $('#stock select#type').val();
-    stock.createStock(supplier, type);
+    var market = event.target.id;
+    stock.createStock(supplier, type, market);
   });
 
   showSupplierContent($('#stock select#supplier').val());
