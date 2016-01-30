@@ -26,9 +26,9 @@
           </div>
 
           <div class="content">
-            <form id="ordini" class="padding10">
+            <form id="orders" class="padding10">
               <div class="input-control file full-size" data-role="input">
-                <input type="file" id="file-ordini">
+                <input type="file" id="file-orders">
                 <button class="button">
                   <span class="mif-folder"></span>
                 </button>
@@ -48,16 +48,35 @@
           </div>
 
           <div class="content">
-            <form class="padding10">
+            <form id="stock" class="padding10">
+              <label for="supplier">Fornitore</label>
+              <div class="input-control select">
+                <select id="supplier">
+                  <option value="nada" selected>Nadalin</option>
+                  <option value="other">Altro</option>
+                </select>
+              </div>
+
+              <div id="nada" class="supplier">
+                <label for="type">Tipo</label>
+                <div class="input-control select">
+                  <select id="type">
+                    <option value="dvd">DVD</option>
+                    <option value="br">BlueRay</option>
+                    <option value="ar">A&amp;R</option>
+                  </select>
+                </div>
+              </div>
+
               <div class="input-control file full-size" data-role="input">
-                <input type="file">
+                <input type="file" id="file-stock">
                 <button class="button">
                   <span class="mif-folder"></span>
                 </button>
               </div>
 
               <button class="button">Azzera corrente</button>
-              <button class="button">Nuovo inventario</button>
+              <button class="button">Nuovo stock</button>
             </form>
           </div>
         </div>

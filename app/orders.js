@@ -108,7 +108,7 @@ function orders2Sheet(data, opts) {
 }
 
 module.exports = {
-  cacheOrdersFile: function(file) {
+  cacheFile: function(file) {
     Papa.parse(file, {
       header: true,
       dynamicTyping: false,
