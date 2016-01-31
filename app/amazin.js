@@ -15,7 +15,7 @@ function showSupplierContent(supplier) {
 $(function() {
   $('#orders').on('change', 'input#file-orders', function(event) {
     var file = event.target.files[0];
-    var name = 'ordini';
+    var name = 'orders';
     files.readAndCache(file, name);
   });
 

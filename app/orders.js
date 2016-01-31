@@ -125,11 +125,11 @@ module.exports = {
   createShippingConfirmation: function() {
     jsonFile.readFile('cache/' + files.getFileName('orders', 'json'), function(err, obj) {
       var csv = Papa.unparse(orders2shippingConfirmation(obj.data), {
-        quotes: true,
+        quotes: false,
         delimiter: '\t'
       });
 
-      var filename = files.getFileName('conferma-spedizioni', 'csv');
+      var filename = files.getFileName('conferma-spedizioni', 'txt');
       filesaver.saveAs(new Blob([files.string2byteArray(csv)], {
         type: "application/octet-stream"
       }), filename);
