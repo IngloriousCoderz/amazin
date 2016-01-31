@@ -21,8 +21,20 @@ module.exports = {
       filesaver.saveAs(new Blob([files.string2byteArray(csv)], {
         type: "application/octet-stream"
       }), filename);
+    });
+  },
 
-      return;
+  resetPrevious: function(supplier, type) {
+    jsonFile.readFile('cache/' + files.getPreviousFileName(supplier + '_' + type, 'json'), function(err, obj) {
+      var csv = Papa.unparse(suppliers[supplier].resetStock(obj.data, type), {
+        quotes: false,
+        delimiter: '\t'
+      });
+
+      var filename = files.getFileName('azzeramento_' + supplier + '_' + type, 'txt');
+      filesaver.saveAs(new Blob([files.string2byteArray(csv)], {
+        type: "application/octet-stream"
+      }), filename);
     });
   }
 };

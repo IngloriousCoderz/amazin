@@ -49,6 +49,13 @@ $(function() {
     files.readAndCache(file, supplier + '_' + type);
   });
 
+  $('#stock').on('click', 'button#reset-previous', function(event) {
+    event.preventDefault();
+    var supplier = $('#stock select#supplier').val();
+    var type = $('#stock select#type').val();
+    stock.resetPrevious(supplier, type);
+  });
+
   $('#stock').on('click', '#new-stock button', function(event) {
     event.preventDefault();
     var supplier = $('#stock select#supplier').val();

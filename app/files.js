@@ -8,6 +8,10 @@ module.exports = {
     return name + '_' + moment().format('YYYY-MM-DD') + '.' + type;
   },
 
+  getPreviousFileName: function(name, type) {
+    return name + '_' + moment().subtract(1, 'days').format('YYYY-MM-DD') + '.' + type;
+  },
+
   readAndCache: function(file, name) {
     var self = this;
     if (file.type === 'application/vnd.ms-excel') {

@@ -112,5 +112,65 @@ module.exports = {
     });
 
     return stock;
+  },
+
+  resetStock: function(data, type) {
+    var stock = [];
+    stock.push([
+      'sku',
+      'product-id',
+      'product-id-type',
+      'price',
+      'minimum-seller-allowed-price',
+      'maximum-seller-allowed-price',
+      'item-condition',
+      'quantity',
+      'add-delete',
+      'item-note',
+      'expedited-shipping',
+      'will-ship-internationally',
+      'fulfillment-center-id'
+    ]);
+
+    data.forEach(function(item, index) {
+      var barcode = item['barcode'];
+
+      var blacklisted = false;
+      BARCODE_BLACKLIST.forEach(function(stopword, index) {
+        if (barcode.toLowerCase().indexOf(stopword.toLowerCase()) >= 0) {
+          blacklisted = true;
+          return;
+        }
+      });
+      if (blacklisted) return;
+
+      var barcodes = /\d+/.exec(barcode);
+      if (barcodes === null) return;
+      barcode = barcodes[0];
+      if (barcode === undefined) return;
+      for (i = barcode.length; i < 13; i++) {
+        barcode = '0' + barcode;
+      }
+
+      var sku = barcode + '_NADA' + (type === 'dvd' ? 'OK' : '');
+
+      stock.push([
+        sku,
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        0,
+        '',
+        '',
+        '',
+        '',
+        ''
+      ]);
+    });
+
+    return stock;
   }
 };
