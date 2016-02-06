@@ -20,99 +20,11 @@
   <div class="grid margin10">
     <div class="row cells2">
       <div class="cell">
-        <div class="panel">
-          <div class="heading">
-            <span class="title">Ordini</span>
-          </div>
-
-          <div class="content">
-            <form id="orders" class="padding10">
-              <div class="input-control file full-size" data-role="input">
-                <input type="file" id="file-orders">
-                <button class="button">
-                  <span class="mif-folder"></span>
-                </button>
-              </div>
-
-              <div class="grid">
-                <div class="row cells2">
-                  <button id="elenco-vendite" class="button cell">Elenco vendite</button>
-                  <button id="conferma-spedizioni" class="button cell">Conferma spedizioni</button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
+        <orders-panel></orders-panel>
       </div>
 
       <div class="cell">
-        <div class="panel">
-          <div class="heading">
-            <span class="title">Inventario</span>
-          </div>
-
-          <div class="content">
-            <form id="stock" class="padding10">
-              <div class="grid no-margin">
-                <div class="row cells3">
-                  <label for="supplier" class="cell padding10">Fornitore</label>
-                  <div class="input-control select cell colspan2">
-                    <select id="supplier">
-                      <option value="nada" selected>Nadalin</option>
-                      <option value="terminal">Terminal</option>
-                      <option value="other">Altro</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div id="nada" class="supplier">
-                  <div class="row cells3">
-                    <label for="type" class="cell padding10">Tipo</label>
-                    <div class="input-control select cell colspan2">
-                      <select id="type">
-                        <option value="dvd">DVD</option>
-                        <option value="br">Blu-ray</option>
-                        <option value="ar">A&amp;R</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div id="terminal" class="supplier">
-                  <div class="row cells3">
-                    <label for="type" class="cell padding10">Tipo</label>
-                    <div class="input-control select cell colspan2">
-                      <select id="type">
-                        <option value="all">Tutto</option>
-                        <option value="dvd">Home Video</option>
-                        <option value="books">Libri</option>
-                        <option value="merchandising">Merchandising</option>
-                        <option value="music">Musica</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="input-control file full-size" data-role="input">
-                  <input type="file" id="file-stock">
-                  <button class="button">
-                    <span class="mif-folder"></span>
-                  </button>
-                </div>
-
-                <button id="reset-previous" class="button">Azzera precedente</button>
-                <fieldset id="new-stock">
-                  <legend>Nuovo inventario</legend>
-                  <button id="it" class="button">IT</button>
-                  <button id="uk" class="button">UK</button>
-                  <button id="fr" class="button">FR</button>
-                  <button id="de" class="button">DE</button>
-                  <button id="es" class="button">ES</button>
-                </fieldset>
-              </div>
-            </form>
-          </div>
-        </div>
+        <stock-panel></stock-panel>
       </div>
     </div>
   </div>

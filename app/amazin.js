@@ -1,11 +1,17 @@
 require('metro/build/css/metro.min.css!');
 require('metro/build/css/metro-icons.min.css!');
 
+var riot = window.riot = require('riot');
+require('./orders-panel');
+require('./stock-panel');
+
 var $ = require('jquery');
 var metro = require('metro/build/js/metro.min.js');
 var filesystem = require('./filesystem');
 var orders = require('./orders');
 var stock = require('./stock');
+
+riot.mount('*');
 
 function showSupplierContent(supplier) {
   $('#stock .supplier').hide();
@@ -13,22 +19,6 @@ function showSupplierContent(supplier) {
 }
 
 $(function() {
-  $('#orders').on('change', 'input#file-orders', function(event) {
-    var file = event.target.files[0];
-    var name = 'orders';
-    filesystem.cache(file, name);
-  });
-
-  $('#orders').on('click', 'button#elenco-vendite', function(event) {
-    event.preventDefault();
-    orders.createSalesList();
-  });
-
-  $('#orders').on('click', 'button#conferma-spedizioni', function(event) {
-    event.preventDefault();
-    orders.createShippingConfirmation();
-  });
-
   $('#stock').on('change', 'select#supplier', function(event) {
     showSupplierContent(event.target.value);
   });
