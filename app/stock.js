@@ -4,9 +4,11 @@ var filesaver = require('filesaver.js');
 
 var files = require('./files');
 var nada = require('./nada');
+var terminal = require('./terminal');
 
 var suppliers = {
-  nada: nada
+  nada: nada,
+  terminal: terminal
 };
 
 module.exports = {

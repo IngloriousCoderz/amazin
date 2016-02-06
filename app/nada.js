@@ -59,6 +59,7 @@ module.exports = {
       var sku = barcode + '_NADA' + (type === 'dvd' ? 'OK' : '');
       var productIdType = 4;
 
+      price = price.replace(',', '.');
       price = price.replace(/[^\d\.]/g, '') * MARKUP;
       price = price.toFixed(2);
       if (market !== 'uk') {

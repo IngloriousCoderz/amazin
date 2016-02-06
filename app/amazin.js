@@ -37,14 +37,24 @@ $(function() {
     var file = event.target.files[0];
     var supplier = $('#stock select#supplier').val();
 
-    if (file.name.toLowerCase().indexOf('dvd') >= 0) {
-      $('#stock select#type').val('dvd');
+    var $type = $('#stock .supplier#' + supplier + ' select#type');
+
+    if (file.name.toLowerCase().indexOf('tutto') >= 0) {
+      $type.val('all');
+    } else if (file.name.toLowerCase().indexOf('dvd') >= 0 || file.name.toLowerCase().indexOf('home_video') >= 0) {
+      $type.val('dvd');
+    } else if (file.name.toLowerCase().indexOf('libri') >= 0) {
+      $type.val('books');
+    } else if (file.name.toLowerCase().indexOf('merchandising') >= 0) {
+      $type.val('merchandising');
+    } else if (file.name.toLowerCase().indexOf('musica') >= 0) {
+      $type.val('music');
     } else if (file.name.toLowerCase().indexOf('br') >= 0) {
-      $('#stock select#type').val('br');
+      $type.val('br');
     } else if (file.name.toLowerCase().indexOf('a&r') >= 0) {
-      $('#stock select#type').val('ar');
+      $type.val('ar');
     }
-    var type = $('#stock select#type').val();
+    var type = $type.val();
 
     files.readAndCache(file, supplier + '_' + type);
   });
@@ -52,14 +62,14 @@ $(function() {
   $('#stock').on('click', 'button#reset-previous', function(event) {
     event.preventDefault();
     var supplier = $('#stock select#supplier').val();
-    var type = $('#stock select#type').val();
+    var type = $('#stock .supplier#' + supplier + ' select#type').val();
     stock.resetPrevious(supplier, type);
   });
 
   $('#stock').on('click', '#new-stock button', function(event) {
     event.preventDefault();
     var supplier = $('#stock select#supplier').val();
-    var type = $('#stock select#type').val();
+    var type = $('#stock .supplier#' + supplier + ' select#type').val();
     var market = event.target.id;
     stock.createStock(supplier, type, market);
   });
