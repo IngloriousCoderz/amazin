@@ -3,7 +3,7 @@ require('metro/build/css/metro-icons.min.css!');
 
 var $ = require('jquery');
 var metro = require('metro/build/js/metro.min.js');
-var files = require('./files');
+var filesystem = require('./filesystem');
 var orders = require('./orders');
 var stock = require('./stock');
 
@@ -16,7 +16,7 @@ $(function() {
   $('#orders').on('change', 'input#file-orders', function(event) {
     var file = event.target.files[0];
     var name = 'orders';
-    files.readAndCache(file, name);
+    filesystem.cache(file, name);
   });
 
   $('#orders').on('click', 'button#elenco-vendite', function(event) {
@@ -56,7 +56,7 @@ $(function() {
     }
     var type = $type.val();
 
-    files.readAndCache(file, supplier + '_' + type);
+    filesystem.cache(file, supplier + '_' + type);
   });
 
   $('#stock').on('click', 'button#reset-previous', function(event) {

@@ -1,10 +1,10 @@
 var moment = require('moment');
 var Papa = require('papaparse');
 var jsonFile = require('jsonfile');
-var filesaver = require('filesaver.js');
-var files = require('./files');
 
-function orders2SalesList(data) {
+var filesystem = require('./filesystem');
+
+function createSalesList(data) {
   var workItems = [];
 
   data.forEach(function(item, index) {
@@ -45,7 +45,7 @@ function orders2SalesList(data) {
   return workItems;
 }
 
-function orders2shippingConfirmation(data) {
+function createShippingConfirmation(data) {
   var shipping = [];
   data.forEach(function(item, index) {
     shipping.push([
@@ -62,77 +62,28 @@ function orders2shippingConfirmation(data) {
   return shipping;
 }
 
-function orders2Sheet(data, opts) {
-  var ws = {};
-
-  data.forEach(function(item, index) {
-    var cell = {
-      c: 0,
-      r: index,
-      v: parseInt(moment().format('X')),
-      t: 'n',
-      // z: XLSX.SSF._table[14],
-      w: moment().format('YYYY-MM-DD')
-    };
-    ws[XLSX.utils.encode_cell({
-      c: cell.c,
-      r: cell.r
-    })] = cell;
-
-    cell = {
-      c: 1,
-      r: index,
-      v: item['product-name'],
-      t: 's'
-    };
-    ws[XLSX.utils.encode_cell({
-      c: cell.c,
-      r: cell.r
-    })] = cell;
-  });
-
-  var range = {
-    s: {
-      c: 2 - 1,
-      r: data.length - 1
-    },
-    e: {
-      c: 0,
-      r: 0
-    }
-  }
-  ws['!range'] = range;
-  ws['!ref'] = XLSX.utils.encode_range(range);
-
-  return ws;
-}
-
 module.exports = {
   createSalesList: function() {
-    jsonFile.readFile('cache/' + files.getFileName('orders', 'json'), function(err, obj) {
-      var csv = Papa.unparse(orders2SalesList(obj.data), {
+    jsonFile.readFile('cache/' + filesystem.getFileName('orders', 'json'), function(err, obj) {
+      var csv = Papa.unparse(createSalesList(obj.data), {
         quotes: true,
-        delimiter: ';' //'\t'
+        delimiter: ';'
       });
 
-      var filename = files.getFileName('elenco-vendite', 'csv');
-      filesaver.saveAs(new Blob([files.string2byteArray(csv)], {
-        type: "application/octet-stream"
-      }), filename);
+      var filename = filesystem.getFileName('elenco-vendite', 'csv');
+      filesystem.save(csv, filename);
     });
   },
 
   createShippingConfirmation: function() {
-    jsonFile.readFile('cache/' + files.getFileName('orders', 'json'), function(err, obj) {
-      var csv = Papa.unparse(orders2shippingConfirmation(obj.data), {
+    jsonFile.readFile('cache/' + filesystem.getFileName('orders', 'json'), function(err, obj) {
+      var csv = Papa.unparse(createShippingConfirmation(obj.data), {
         quotes: false,
         delimiter: '\t'
       });
 
-      var filename = files.getFileName('conferma-spedizioni', 'txt');
-      filesaver.saveAs(new Blob([files.string2byteArray(csv)], {
-        type: "application/octet-stream"
-      }), filename);
+      var filename = filesystem.getFileName('conferma-spedizioni', 'txt');
+      filesystem.save(csv, filename);
     });
   }
 };

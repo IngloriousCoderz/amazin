@@ -1,8 +1,3 @@
-var Papa = require('papaparse');
-var jsonFile = require('jsonfile');
-var filesaver = require('filesaver.js');
-var files = require('./files');
-
 var BARCODE_BLACKLIST = [
   'rental',
   'EX RENTAL'

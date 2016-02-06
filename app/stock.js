@@ -1,10 +1,9 @@
 var Papa = require('papaparse');
 var jsonFile = require('jsonfile');
-var filesaver = require('filesaver.js');
 
-var files = require('./files');
-var nada = require('./nada');
-var terminal = require('./terminal');
+var filesystem = require('./filesystem');
+var nada = require('./suppliers/nada');
+var terminal = require('./suppliers/terminal');
 
 var suppliers = {
   nada: nada,
@@ -171,30 +170,26 @@ function resetStock(supplier, type, data) {
 
 module.exports = {
   createStock: function(supplier, type, market) {
-    jsonFile.readFile('cache/' + files.getFileName(supplier + '_' + type, 'json'), function(err, obj) {
+    jsonFile.readFile('cache/' + filesystem.getFileName(supplier + '_' + type, 'json'), function(err, obj) {
       var csv = Papa.unparse(createStock(suppliers[supplier], type, obj.data, market), {
         quotes: false,
         delimiter: '\t'
       });
 
-      var filename = files.getFileName('inventario_' + supplier + '_' + type + '_' + market, 'txt');
-      filesaver.saveAs(new Blob([files.string2byteArray(csv)], {
-        type: "application/octet-stream"
-      }), filename);
+      var filename = filesystem.getFileName('inventario_' + supplier + '_' + type + '_' + market, 'txt');
+      filesystem.save(csv, filename);
     });
   },
 
   resetPrevious: function(supplier, type) {
-    jsonFile.readFile('cache/' + files.getPreviousFileName(supplier + '_' + type, 'json'), function(err, obj) {
+    jsonFile.readFile('cache/' + filesystem.getPreviousFileName(supplier + '_' + type, 'json'), function(err, obj) {
       var csv = Papa.unparse(resetStock(suppliers[supplier], type, obj.data), {
         quotes: false,
         delimiter: '\t'
       });
 
-      var filename = files.getFileName('azzeramento_' + supplier + '_' + type, 'txt');
-      filesaver.saveAs(new Blob([files.string2byteArray(csv)], {
-        type: "application/octet-stream"
-      }), filename);
+      var filename = filesystem.getFileName('azzeramento_' + supplier + '_' + type, 'txt');
+      filesystem.save(csv, filename);
     });
   }
 };
