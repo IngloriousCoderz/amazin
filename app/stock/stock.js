@@ -1,7 +1,7 @@
 var Papa = require('papaparse');
 var jsonFile = require('jsonfile');
 
-var filesystem = require('./filesystem');
+var filesystem = require('../filesystem');
 var nada = require('./stores/nada');
 var terminal = require('./stores/terminal');
 var markets = require('./markets');
