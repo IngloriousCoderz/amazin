@@ -27,6 +27,7 @@
     </div>
   </div>
 
+  <script>
   var filesystem = require('./filesystem')
   var orders = require('./orders')
 
@@ -43,4 +44,5 @@
   shippingConfirmationClicked(event) {
     orders.createShippingConfirmation()
   }
+  </script>
 </orders-panel>

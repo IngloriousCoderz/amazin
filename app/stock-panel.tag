@@ -10,7 +10,7 @@
           <div class="row cells3">
             <label class="cell padding10">Fornitore</label>
             <div class="input-control select cell colspan2">
-              <select onchange={ supplierChanged }>
+              <select onchange={ storeChanged }>
                 <option>Scegli un fornitore...</option>
                 <option value="nada">Nadalin</option>
                 <option value="terminal">Terminal</option>
@@ -18,7 +18,7 @@
             </div>
           </div>
 
-          <div class="supplier" show={ supplier === 'nada' }>
+          <div class="store" show={ store === 'nada' }>
             <div class="row cells3">
               <label for="type" class="cell padding10">Tipo</label>
               <div class="input-control select cell colspan2">
@@ -31,7 +31,7 @@
             </div>
           </div>
 
-          <div class="supplier" show={ supplier === 'terminal' }>
+          <div class="store" show={ store === 'terminal' }>
             <div class="row cells3">
               <label for="type" class="cell padding10">Tipo</label>
               <div class="input-control select cell colspan2">
@@ -67,11 +67,12 @@
     </div>
   </div>
 
+  <script>
   var filesystem = require('./filesystem')
   var stock = require('./stock')
 
-  supplierChanged(event) {
-    this.supplier = event.target.value
+  storeChanged(event) {
+    this.store = event.target.value
   }
 
   typeChanged(event) {
@@ -97,15 +98,16 @@
       this.type = 'ar'
     }
 
-    filesystem.cache(file, this.supplier + '_' + this.type)
+    filesystem.cache(file, this.store + '_' + this.type)
   }
 
   resetPreviousClicked(event) {
-    stock.resetPrevious(this.supplier, this.type)
+    stock.resetPrevious(this.store, this.type)
   }
 
   newStockClicked(event) {
     var market = event.target.id
-    stock.createStock(this.supplier, this.type, market)
+    stock.createStock(this.store, this.type, market)
   }
+  </script>
 </stock-panel>

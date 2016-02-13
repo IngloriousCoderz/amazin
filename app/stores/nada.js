@@ -2,7 +2,6 @@ var BARCODE_BLACKLIST = [
   'rental',
   'EX RENTAL'
 ];
-var MARKUP = 2;
 
 module.exports = {
   markup: 2,

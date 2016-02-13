@@ -2,15 +2,16 @@ var Papa = require('papaparse');
 var jsonFile = require('jsonfile');
 
 var filesystem = require('./filesystem');
-var nada = require('./suppliers/nada');
-var terminal = require('./suppliers/terminal');
+var nada = require('./stores/nada');
+var terminal = require('./stores/terminal');
+var markets = require('./markets');
 
-var suppliers = {
+var stores = {
   nada: nada,
   terminal: terminal
 };
 
-function createStock(supplier, type, data, market) {
+function createStock(store, type, data, market) {
   var stock = [];
   stock.push([
     'sku',
@@ -29,13 +30,11 @@ function createStock(supplier, type, data, market) {
   ]);
 
   data.forEach(function(item, index) {
-    if (supplier.isBlacklisted(item)) return;
+    if (store.isBlacklisted(item)) return;
 
-    var fields = supplier.getFields(item);
+    var fields = store.getFields(item);
+
     var barcode = fields.barcode;
-    var quantity = fields.quantity;
-    var price = fields.price;
-
     var barcodes = /\d+/.exec(barcode);
     if (barcodes === null) return;
     barcode = barcodes[0];
@@ -44,6 +43,7 @@ function createStock(supplier, type, data, market) {
       barcode = '0' + barcode;
     }
 
+    var quantity = fields.quantity;
     if (isNaN(quantity) || quantity <= 0) return;
     if (quantity >= 1 && quantity <= 5) quantity = 1;
     else if (quantity >= 6 && quantity <= 10) quantity = 2;
@@ -55,43 +55,22 @@ function createStock(supplier, type, data, market) {
       else quantity = 1;
     }
 
-    var sku = supplier.getSku(barcode, type);
+    var sku = store.getSku(barcode, type);
     var productIdType = 4;
 
+    var price = fields.price;
     price = price.replace(',', '.');
-    price = price.replace(/[^\d\.]/g, '') * supplier.markup;
+    price = price.replace(/[^\d\.]/g, '') * store.markup;
     price = price.toFixed(2);
-    if (market !== 'uk') {
-      price = price.replace('.', ',');
-    }
+    price = markets[market].formatPrice(price);
 
     var minimumSellerAllowedPrice = '';
     var maximumSellerAllowedPrice = '';
     var itemCondition = 11;
     var addDelete = 'a';
-    var itemNote = 'Nuovo, originale e sigillato';
-    if (market === 'fr') {
-      itemNote = 'Neuf';
-    } else if (market !== 'it') {
-      itemNote = '';
-    }
-
-    var expeditedShipping = 'N';
-    if (market === 'it') {
-      expeditedShipping = 23;
-    }
-
-    var willShipInternationally = 26;
-    if (market === 'uk') {
-      willShipInternationally = 6;
-    } else if (market === 'fr') {
-      willShipInternationally = 19;
-    } else if (market === 'de') {
-      willShipInternationally = 10;
-    } else if (market === 'es') {
-      willShipInternationally = 30;
-    }
-
+    var itemNote = markets[market].itemNote;
+    var expeditedShipping = markets[market].expeditedShipping;
+    var willShipInternationally = markets[market].willShipInternationally;
     var fulfillmentCenterId = '';
 
     stock.push([
@@ -114,7 +93,7 @@ function createStock(supplier, type, data, market) {
   return stock;
 }
 
-function resetStock(supplier, type, data) {
+function resetStock(store, type, data) {
   var stock = [];
   stock.push([
     'sku',
@@ -133,11 +112,11 @@ function resetStock(supplier, type, data) {
   ]);
 
   data.forEach(function(item, index) {
-    if (supplier.isBlacklisted(item)) return;
+    if (store.isBlacklisted(item)) return;
 
-    var fields = supplier.getFields(item);
+    var fields = store.getFields(item);
+
     var barcode = fields.barcode;
-
     var barcodes = /\d+/.exec(barcode);
     if (barcodes === null) return;
     barcode = barcodes[0];
@@ -146,22 +125,34 @@ function resetStock(supplier, type, data) {
       barcode = '0' + barcode;
     }
 
-    var sku = supplier.getSku(barcode, type);
+    var sku = store.getSku(barcode, type);
+    barcode = '';
+    var productType = '';
+    var price = '';
+    var minimumSellerAllowedPrice = '';
+    var maximumSellerAllowedPrice = '';
+    var itemCondition = '';
+    var quantity = 0;
+    var addDelete = '';
+    var itemNote = '';
+    var expeditedShipping = '';
+    var willShipInternationally = '';
+    var fulfillmentCenterId = '';
 
     stock.push([
       sku,
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      0,
-      '',
-      '',
-      '',
-      '',
-      ''
+      barcode,
+      productIdType,
+      price,
+      minimumSellerAllowedPrice,
+      maximumSellerAllowedPrice,
+      itemCondition,
+      quantity,
+      addDelete,
+      itemNote,
+      expeditedShipping,
+      willShipInternationally,
+      fulfillmentCenterId
     ]);
   });
 
@@ -169,26 +160,26 @@ function resetStock(supplier, type, data) {
 };
 
 module.exports = {
-  createStock: function(supplier, type, market) {
-    jsonFile.readFile('cache/' + filesystem.getFileName(supplier + '_' + type, 'json'), function(err, obj) {
-      var csv = Papa.unparse(createStock(suppliers[supplier], type, obj.data, market), {
+  createStock: function(store, type, market) {
+    jsonFile.readFile('cache/' + filesystem.getFileName(store + '_' + type, 'json'), function(err, obj) {
+      var csv = Papa.unparse(createStock(stores[store], type, obj.data, market), {
         quotes: false,
         delimiter: '\t'
       });
 
-      var filename = filesystem.getFileName('inventario_' + supplier + '_' + type + '_' + market, 'txt');
+      var filename = filesystem.getFileName('inventario_' + store + '_' + type + '_' + market, 'txt');
       filesystem.save(csv, filename);
     });
   },
 
-  resetPrevious: function(supplier, type) {
-    jsonFile.readFile('cache/' + filesystem.getPreviousFileName(supplier + '_' + type, 'json'), function(err, obj) {
-      var csv = Papa.unparse(resetStock(suppliers[supplier], type, obj.data), {
+  resetPrevious: function(store, type) {
+    jsonFile.readFile('cache/' + filesystem.getPreviousFileName(store + '_' + type, 'json'), function(err, obj) {
+      var csv = Papa.unparse(resetStock(stores[store], type, obj.data), {
         quotes: false,
         delimiter: '\t'
       });
 
-      var filename = filesystem.getFileName('azzeramento_' + supplier + '_' + type, 'txt');
+      var filename = filesystem.getFileName('azzeramento_' + store + '_' + type, 'txt');
       filesystem.save(csv, filename);
     });
   }
