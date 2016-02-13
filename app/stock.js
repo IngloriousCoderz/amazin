@@ -45,9 +45,11 @@ function addItem(stock, item, values, store) {
 
   var sku = store.getSku(barcode, type);
 
+  barcode = values.barcode !== '' ? values.barcode : barcode;
+
   stock.push([
     sku,
-    values.barcode,
+    barcode,
     values.productIdType,
     values.price,
     values.minimumSellerAllowedPrice,
