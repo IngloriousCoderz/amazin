@@ -20,7 +20,7 @@
 
           <div class="store" show={ store === 'nada' }>
             <div class="row cells3">
-              <label for="type" class="cell padding10">Tipo</label>
+              <label class="cell padding10">Tipo</label>
               <div class="input-control select cell colspan2">
                 <select onchange={ typeChanged }>
                   <option value="dvd" selected={ type === 'dvd' }>DVD</option>
@@ -33,7 +33,7 @@
 
           <div class="store" show={ store === 'terminal' }>
             <div class="row cells3">
-              <label for="type" class="cell padding10">Tipo</label>
+              <label class="cell padding10">Tipo</label>
               <div class="input-control select cell colspan2">
                 <select onchange={ typeChanged }>
                   <option value="all" selected={ type === 'all' }>Tutto</option>
@@ -54,7 +54,7 @@
           </div>
 
           <button class="button" onclick={ resetPreviousClicked }>Azzera precedente</button>
-          <fieldset id="new-stock">
+          <fieldset>
             <legend>Nuovo inventario</legend>
             <button id="it" class="button" onclick={ newStockClicked }>IT</button>
             <button id="uk" class="button" onclick={ newStockClicked }>UK</button>
@@ -81,20 +81,21 @@
 
   fileChanged(event) {
     var file = event.target.files[0]
+    var fileName = file.name.toLowerCase()
 
-    if (file.name.toLowerCase().indexOf('tutto') >= 0) {
+    if (fileName.indexOf('tutto') >= 0) {
       this.type = 'all'
-    } else if (file.name.toLowerCase().indexOf('dvd') >= 0 || file.name.toLowerCase().indexOf('home_video') >= 0) {
+    } else if (fileName.indexOf('dvd') >= 0 || fileName.indexOf('home_video') >= 0) {
       this.type = 'dvd'
-    } else if (file.name.toLowerCase().indexOf('libri') >= 0) {
+    } else if (fileName.indexOf('libri') >= 0) {
       this.type = 'books'
-    } else if (file.name.toLowerCase().indexOf('merchandising') >= 0) {
+    } else if (fileName.indexOf('merchandising') >= 0) {
       this.type = 'merchandising'
-    } else if (file.name.toLowerCase().indexOf('musica') >= 0) {
+    } else if (fileName.indexOf('musica') >= 0) {
       this.type = 'music'
-    } else if (file.name.toLowerCase().indexOf('br') >= 0) {
+    } else if (fileName.indexOf('br') >= 0) {
       this.type = 'br'
-    } else if (file.name.toLowerCase().indexOf('a&r') >= 0) {
+    } else if (fileName.indexOf('a&r') >= 0) {
       this.type = 'ar'
     }
 
