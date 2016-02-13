@@ -9,8 +9,8 @@ var TITLE_BLACKLIST = [
 module.exports = {
   markup: 1.25,
 
-  isBlacklisted: function(item) {
-    var title = item['Titolo'];
+  isBlacklisted: function(fields) {
+    var title = fields.title;
     TITLE_BLACKLIST.forEach(function(stopword, index) {
       if (title.toLowerCase().indexOf(stopword.toLowerCase()) >= 0) {
         return true;

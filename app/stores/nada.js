@@ -6,8 +6,8 @@ var BARCODE_BLACKLIST = [
 module.exports = {
   markup: 2,
 
-  isBlacklisted: function(item) {
-    var barcode = item['barcode'];
+  isBlacklisted: function(fields) {
+    var barcode = fields.barcode;
     BARCODE_BLACKLIST.forEach(function(stopword, index) {
       if (barcode.toLowerCase().indexOf(stopword.toLowerCase()) >= 0) {
         return true;
