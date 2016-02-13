@@ -24,7 +24,7 @@ module.exports = {
 
   cache: function(file, name) {
     var self = this;
-    if (file.type === 'application/vnd.ms-excel') {
+    if (file.type === 'application/vnd.ms-excel' || file.name !== undefined && file.name.indexOf('.xls') >= 0) {
       var reader = new FileReader();
       reader.onload = function(e) {
         var data = e.target.result;

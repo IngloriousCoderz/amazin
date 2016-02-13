@@ -47,7 +47,7 @@ function isBlacklisted(store, fields) {
   return store.isBlacklisted(fields) || fields.barcode === null;
 }
 
-function addItem(stock, fields, values, store) {
+function addItem(stock, fields, values, store, type) {
   var barcode = fields.barcode;
   var sku = store.getSku(barcode, type);
 
@@ -106,16 +106,16 @@ function createStock(store, type, data, market) {
       if (quantity < 3) return;
       else quantity = 1;
     }
-
-    values.productIdType = 4;
+    values.quantity = quantity;
 
     var price = values.price;
     price = price.replace(',', '.');
     price = price.replace(/[^\d\.]/g, '') * store.markup;
     price = price.toFixed(2);
     price = markets[market].formatPrice(price);
+    values.price = price;
 
-    addItem(stock, fields, values, store);
+    addItem(stock, fields, values, store, type);
   });
 
   return stock;
@@ -146,7 +146,7 @@ function resetStock(store, type, data) {
       fulfillmentCenterId: ''
     };
 
-    addItem(stock, fields, values, store);
+    addItem(stock, fields, values, store, type);
   });
 
   return stock;
