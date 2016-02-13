@@ -11,8 +11,7 @@ var stores = {
   terminal: terminal
 };
 
-function createStock(store, type, data, market) {
-  var stock = [];
+function addHeader(stock) {
   stock.push([
     'sku',
     'product-id',
@@ -28,22 +27,49 @@ function createStock(store, type, data, market) {
     'will-ship-internationally',
     'fulfillment-center-id'
   ]);
+}
+
+function addItem(stock, item, values, store) {
+  if (store.isBlacklisted(item)) return;
+
+  var fields = store.getFields(item);
+
+  var barcode = fields.barcode;
+  var barcodes = /\d+/.exec(barcode);
+  if (barcodes === null) return;
+  barcode = barcodes[0];
+  if (barcode === undefined) return;
+  for (i = barcode.length; i < 13; i++) {
+    barcode = '0' + barcode;
+  }
+
+  var sku = store.getSku(barcode, type);
+
+  stock.push([
+    sku,
+    values.barcode,
+    values.productIdType,
+    values.price,
+    values.minimumSellerAllowedPrice,
+    values.maximumSellerAllowedPrice,
+    values.itemCondition,
+    values.quantity,
+    values.addDelete,
+    values.itemNote,
+    values.expeditedShipping,
+    values.willShipInternationally,
+    values.fulfillmentCenterId
+  ]);
+}
+
+function createStock(store, type, data, market) {
+  var stock = [];
+  addHeader(stock);
 
   data.forEach(function(item, index) {
-    if (store.isBlacklisted(item)) return;
+    var values = {};
 
-    var fields = store.getFields(item);
-
-    var barcode = fields.barcode;
-    var barcodes = /\d+/.exec(barcode);
-    if (barcodes === null) return;
-    barcode = barcodes[0];
-    if (barcode === undefined) return;
-    for (i = barcode.length; i < 13; i++) {
-      barcode = '0' + barcode;
-    }
-
-    var quantity = fields.quantity;
+    var quantity = values.quantity = fields.quantity;
     if (isNaN(quantity) || quantity <= 0) return;
     if (quantity >= 1 && quantity <= 5) quantity = 1;
     else if (quantity >= 6 && quantity <= 10) quantity = 2;
@@ -55,39 +81,24 @@ function createStock(store, type, data, market) {
       else quantity = 1;
     }
 
-    var sku = store.getSku(barcode, type);
-    var productIdType = 4;
+    values.productIdType = 4;
 
-    var price = fields.price;
+    var price = values.price = fields.price;
     price = price.replace(',', '.');
     price = price.replace(/[^\d\.]/g, '') * store.markup;
     price = price.toFixed(2);
     price = markets[market].formatPrice(price);
 
-    var minimumSellerAllowedPrice = '';
-    var maximumSellerAllowedPrice = '';
-    var itemCondition = 11;
-    var addDelete = 'a';
-    var itemNote = markets[market].itemNote;
-    var expeditedShipping = markets[market].expeditedShipping;
-    var willShipInternationally = markets[market].willShipInternationally;
-    var fulfillmentCenterId = '';
+    values.minimumSellerAllowedPrice = '';
+    values.maximumSellerAllowedPrice = '';
+    values.itemCondition = 11;
+    values.addDelete = 'a';
+    values.itemNote = markets[market].itemNote;
+    values.expeditedShipping = markets[market].expeditedShipping;
+    values.willShipInternationally = markets[market].willShipInternationally;
+    values.fulfillmentCenterId = '';
 
-    stock.push([
-      sku,
-      barcode,
-      productIdType,
-      price,
-      minimumSellerAllowedPrice,
-      maximumSellerAllowedPrice,
-      itemCondition,
-      quantity,
-      addDelete,
-      itemNote,
-      expeditedShipping,
-      willShipInternationally,
-      fulfillmentCenterId
-    ]);
+    addItem(stock, item, values, store);
   });
 
   return stock;
@@ -95,65 +106,25 @@ function createStock(store, type, data, market) {
 
 function resetStock(store, type, data) {
   var stock = [];
-  stock.push([
-    'sku',
-    'product-id',
-    'product-id-type',
-    'price',
-    'minimum-seller-allowed-price',
-    'maximum-seller-allowed-price',
-    'item-condition',
-    'quantity',
-    'add-delete',
-    'item-note',
-    'expedited-shipping',
-    'will-ship-internationally',
-    'fulfillment-center-id'
-  ]);
+  addHeader(stock);
 
   data.forEach(function(item, index) {
-    if (store.isBlacklisted(item)) return;
+    var values = {
+      barcode: '',
+      productType: '',
+      price: '',
+      minimumSellerAllowedPrice: '',
+      maximumSellerAllowedPrice: '',
+      itemCondition: '',
+      quantity: 0,
+      addDelete: '',
+      itemNote: '',
+      expeditedShipping: '',
+      willShipInternationally: '',
+      fulfillmentCenterId: ''
+    };
 
-    var fields = store.getFields(item);
-
-    var barcode = fields.barcode;
-    var barcodes = /\d+/.exec(barcode);
-    if (barcodes === null) return;
-    barcode = barcodes[0];
-    if (barcode === undefined) return;
-    for (i = barcode.length; i < 13; i++) {
-      barcode = '0' + barcode;
-    }
-
-    var sku = store.getSku(barcode, type);
-    barcode = '';
-    var productType = '';
-    var price = '';
-    var minimumSellerAllowedPrice = '';
-    var maximumSellerAllowedPrice = '';
-    var itemCondition = '';
-    var quantity = 0;
-    var addDelete = '';
-    var itemNote = '';
-    var expeditedShipping = '';
-    var willShipInternationally = '';
-    var fulfillmentCenterId = '';
-
-    stock.push([
-      sku,
-      barcode,
-      productIdType,
-      price,
-      minimumSellerAllowedPrice,
-      maximumSellerAllowedPrice,
-      itemCondition,
-      quantity,
-      addDelete,
-      itemNote,
-      expeditedShipping,
-      willShipInternationally,
-      fulfillmentCenterId
-    ]);
+    addItem(stock, item, values, store);
   });
 
   return stock;
