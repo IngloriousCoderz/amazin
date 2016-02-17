@@ -27,5 +27,15 @@ module.exports = {
 
   getSku: function(barcode, type) {
     return barcode + '_NADA' + (type === 'dvd' ? 'OK' : '');
-  }
+  },
+
+  getQuantity: function(quantity) {
+    if (quantity >= 1 && quantity <= 5) quantity = 1;
+    else if (quantity >= 6 && quantity <= 10) quantity = 2;
+    else if (quantity >= 11 && quantity <= 20) quantity = 3;
+    else if (quantity > 20) quantity = 5;
+    return quantity;
+  },
+
+  onCached: function(type) {}
 };

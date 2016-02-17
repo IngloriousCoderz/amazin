@@ -4,11 +4,13 @@ var jsonFile = require('jsonfile');
 var filesystem = require('../filesystem');
 var nada = require('./stores/nada');
 var terminal = require('./stores/terminal');
+var discoteca = require('./stores/discoteca');
 var markets = require('./markets');
 
 var stores = {
   nada: nada,
-  terminal: terminal
+  terminal: terminal,
+  discoteca: discoteca
 };
 
 function addHeader(stock) {
@@ -97,16 +99,7 @@ function createStock(store, type, data, market) {
 
     var quantity = values.quantity;
     if (isNaN(quantity) || quantity <= 0) return;
-    if (quantity >= 1 && quantity <= 5) quantity = 1;
-    else if (quantity >= 6 && quantity <= 10) quantity = 2;
-    else if (quantity >= 11 && quantity <= 20) quantity = 3;
-    else if (quantity > 20) quantity = 5;
-
-    if (type === 'merchandising') {
-      if (quantity < 3) return;
-      else quantity = 1;
-    }
-    values.quantity = quantity;
+    values.quantity = store.getQuantity(quantity);
 
     var price = values.price;
     price = price.replace(',', '.');
@@ -153,6 +146,10 @@ function resetStock(store, type, data) {
 };
 
 module.exports = {
+  onCached: function(store, type) {
+    stores[store].onCached(type);
+  },
+
   createStock: function(store, type, market) {
     jsonFile.readFile('cache/' + filesystem.getFileName(store + '_' + type, 'json'), function(err, obj) {
       var csv = Papa.unparse(createStock(stores[store], type, obj.data, market), {

@@ -11,50 +11,61 @@
             <label class="cell padding10">Fornitore</label>
             <div class="input-control select cell colspan2">
               <select onchange={ storeChanged }>
-                <option>Scegli un fornitore...</option>
+                <option value="">Scegli un fornitore...</option>
                 <option value="nada">Nadalin</option>
                 <option value="terminal">Terminal</option>
+                <option value="discoteca">Discoteca Laziale</option>
               </select>
             </div>
           </div>
 
-          <div class="store" show={ store === 'nada' }>
-            <div class="row cells3">
-              <label class="cell padding10">Tipo</label>
-              <div class="input-control select cell colspan2">
-                <select onchange={ typeChanged }>
-                  <option value="dvd" selected={ type === 'dvd' }>DVD</option>
-                  <option value="br" selected={ type === 'br' }>Blu-ray</option>
-                  <option value="ar" selected={ type === 'ar' }>A&amp;R</option>
-                </select>
-              </div>
+          <div class="row cells3" if={ isCurrent('nada') }>
+            <label class="cell padding10">Tipo</label>
+            <div class="input-control select cell colspan2">
+              <select onchange={ typeChanged }>
+                <option value="dvd" selected={ type === 'dvd' }>DVD</option>
+                <option value="br" selected={ type === 'br' }>Blu-ray</option>
+                <option value="ar" selected={ type === 'ar' }>A&amp;R</option>
+              </select>
             </div>
           </div>
 
-          <div class="store" show={ store === 'terminal' }>
-            <div class="row cells3">
-              <label class="cell padding10">Tipo</label>
-              <div class="input-control select cell colspan2">
-                <select onchange={ typeChanged }>
-                  <option value="all" selected={ type === 'all' }>Tutto</option>
-                  <option value="dvd" selected={ type === 'dvd' }>Home Video</option>
-                  <option value="books" selected={ type === 'books' }>Libri</option>
-                  <option value="merchandising" selected={ type === 'merchandising' }>Merchandising</option>
-                  <option value="music" selected={ type === 'music' }>Musica</option>
-                </select>
-              </div>
+          <div class="row cells3" if={ isCurrent('terminal') }>
+            <label class="cell padding10">Tipo</label>
+            <div class="input-control select cell colspan2">
+              <select onchange={ typeChanged }>
+                <option value="all" selected={ type === 'all' }>Tutto</option>
+                <option value="dvd" selected={ type === 'dvd' }>Home Video</option>
+                <option value="books" selected={ type === 'books' }>Libri</option>
+                <option value="merchandising" selected={ type === 'merchandising' }>Merchandising</option>
+                <option value="music" selected={ type === 'music' }>Musica</option>
+              </select>
             </div>
           </div>
 
-          <div class="input-control file full-size" data-role="input">
-            <input type="file" onchange={ fileChanged }>
-            <button class="button">
-              <span class="mif-folder"></span>
-            </button>
+          <div class="row cells3" if={ isCurrent('discoteca') }>
+            <label class="cell padding10">Catalogo</label>
+            <div class="input-control file cell colspan2" data-role="input">
+              <input type="file" onchange={ catalogFileChanged }>
+              <button class="button">
+                <span class="mif-folder"></span>
+              </button>
+            </div>
           </div>
 
-          <button class="button" onclick={ resetPreviousClicked }>Azzera precedente</button>
-          <fieldset>
+          <div class="row cells3">
+            <label class="cell padding10">Stock</label>
+            <div class="input-control file cell colspan2" data-role="input">
+              <input type="file" disabled={ isCurrent('') } onchange={ fileChanged }>
+              <button class="button">
+                <span class="mif-folder"></span>
+              </button>
+            </div>
+          </div>
+
+          <button class="button" disabled={ missingInput() } onclick={ resetPreviousClicked }>Azzera precedente</button>
+
+          <fieldset disabled={ missingInput() }>
             <legend>Nuovo inventario</legend>
             <button id="it" class="button" onclick={ newStockClicked }>IT</button>
             <button id="uk" class="button" onclick={ newStockClicked }>UK</button>
@@ -71,6 +82,18 @@
   var filesystem = require('../filesystem')
   var stock = require('./stock')
 
+  this.store = ''
+
+  isCurrent(store) {
+    return this.store === store
+  }
+
+  missingInput() {
+    if (this.isCurrent('')) return true
+    if (this.file === undefined) return true
+    if (this.isCurrent('discoteca') && this.catalogFile === undefined) return true
+  }
+
   storeChanged(event) {
     this.store = event.target.value
   }
@@ -79,11 +102,21 @@
     this.type = event.target.value
   }
 
-  fileChanged(event) {
-    var file = event.target.files[0]
-    var fileName = file.name.toLowerCase()
+  catalogFileChanged(event) {
+    this.catalogFile = event.target.files[0]
+    var name = this.store + '_catalog'
+    filesystem.read(this.catalogFile, function(results) {
+      filesystem.cache(results, name)
+    })
+  }
 
-    if (fileName.indexOf('tutto') >= 0) {
+  fileChanged(event) {
+    this.file = event.target.files[0]
+    var fileName = this.file.name.toLowerCase()
+
+    if (fileName.indexOf('completo') >= 0) {
+      this.type = 'stock'
+    } else if (fileName.indexOf('tutto') >= 0) {
       this.type = 'all'
     } else if (fileName.indexOf('dvd') >= 0 || fileName.indexOf('home_video') >= 0) {
       this.type = 'dvd'
@@ -99,7 +132,14 @@
       this.type = 'ar'
     }
 
-    filesystem.cache(file, this.store + '_' + this.type)
+    var name = this.store + '_' + this.type
+
+    var self = this
+    filesystem.read(this.file, function(results) {
+      filesystem.cache(results, name, function() {
+        stock.onCached(self.store, self.type)
+      })
+    })
   }
 
   resetPreviousClicked(event) {

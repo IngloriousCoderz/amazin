@@ -1,5 +1,5 @@
 var moment = require('moment');
-var XLSX = require('xlsx');
+// var XLSX = require('xlsx');
 var Papa = require('papaparse');
 var jsonFile = require('jsonfile');
 var filesaver = require('filesaver.js');
@@ -22,36 +22,44 @@ module.exports = {
     return name + '_' + moment().subtract(1, 'days').format('YYYY-MM-DD') + '.' + type;
   },
 
-  cache: function(file, name) {
+  read: function(file, onRead) {
     var self = this;
-    if (file.type === 'application/vnd.ms-excel' || file.name !== undefined && file.name.indexOf('.xls') >= 0) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var data = e.target.result;
-        var workbook = XLSX.read(data, {
-          type: 'binary'
-        });
-        self.cache(XLSX.utils.sheet_to_csv(workbook.Sheets[workbook.SheetNames[0]]), name);
-      }
-      reader.readAsBinaryString(file);
-      return;
-    }
+    // if (file.type === 'application/vnd.ms-excel' || file.name !== undefined && file.name.indexOf('.xls') >= 0) {
+    //   var reader = new FileReader();
+    //   reader.onload = function(e) {
+    //     var data = e.target.result;
+    //     var workbook = XLSX.read(data, {
+    //       type: 'binary'
+    //     });
+    //     self.read(XLSX.utils.sheet_to_csv(workbook.Sheets[workbook.SheetNames[0]]), name);
+    //   }
+    //   reader.readAsBinaryString(file);
+    //   return;
+    // }
 
+    this.parse(file, onRead);
+  },
+
+  parse: function(file, onComplete) {
     Papa.parse(file, {
       header: true,
       dynamicTyping: false,
       skipEmptyLines: true,
 
-      complete: function(results, file) {
-        jsonFile.writeFile('cache/' + self.getFileName(name, 'json'), results, function(err) {
-          if (err) {
-            console.log(err);
-          }
-        });
-      },
+      complete: onComplete,
 
       error: function(error, file, inputElem, reason) {
         console.log(error, file, inputElem, reason);
+      }
+    });
+  },
+
+  cache: function(results, name, onCached) {
+    jsonFile.writeFile('cache/' + this.getFileName(name, 'json'), results, function(err) {
+      if (err) {
+        console.log(err);
+      } else if (onCached !== undefined) {
+        onCached();
       }
     });
   },

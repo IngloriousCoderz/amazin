@@ -34,7 +34,9 @@
   fileChanged(event) {
     var file = event.target.files[0]
     var name = 'orders'
-    filesystem.cache(file, name)
+    filesystem.read(file, function(results) {
+      filesystem.cache(results, name)
+    })
   }
 
   salesListClicked(event) {

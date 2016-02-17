@@ -1,6 +1,18 @@
-riot.tag2('stock-panel', '<div class="panel"> <div class="heading"> <span class="title">Inventario</span> </div> <div class="content"> <form class="padding10"> <div class="grid no-margin"> <div class="row cells3"> <label class="cell padding10">Fornitore</label> <div class="input-control select cell colspan2"> <select onchange="{storeChanged}"> <option>Scegli un fornitore...</option> <option value="nada">Nadalin</option> <option value="terminal">Terminal</option> </select> </div> </div> <div class="store" show="{store === \'nada\'}"> <div class="row cells3"> <label class="cell padding10">Tipo</label> <div class="input-control select cell colspan2"> <select onchange="{typeChanged}"> <option value="dvd" __selected="{type === \'dvd\'}">DVD</option> <option value="br" __selected="{type === \'br\'}">Blu-ray</option> <option value="ar" __selected="{type === \'ar\'}">A&amp;R</option> </select> </div> </div> </div> <div class="store" show="{store === \'terminal\'}"> <div class="row cells3"> <label class="cell padding10">Tipo</label> <div class="input-control select cell colspan2"> <select onchange="{typeChanged}"> <option value="all" __selected="{type === \'all\'}">Tutto</option> <option value="dvd" __selected="{type === \'dvd\'}">Home Video</option> <option value="books" __selected="{type === \'books\'}">Libri</option> <option value="merchandising" __selected="{type === \'merchandising\'}">Merchandising</option> <option value="music" __selected="{type === \'music\'}">Musica</option> </select> </div> </div> </div> <div class="input-control file full-size" data-role="input"> <input type="file" onchange="{fileChanged}"> <button class="button"> <span class="mif-folder"></span> </button> </div> <button class="button" onclick="{resetPreviousClicked}">Azzera precedente</button> <fieldset> <legend>Nuovo inventario</legend> <button id="it" class="button" onclick="{newStockClicked}">IT</button> <button id="uk" class="button" onclick="{newStockClicked}">UK</button> <button id="fr" class="button" onclick="{newStockClicked}">FR</button> <button id="de" class="button" onclick="{newStockClicked}">DE</button> <button id="es" class="button" onclick="{newStockClicked}">ES</button> </fieldset> </div> </form> </div> </div>', '', '', function(opts) {
+riot.tag2('stock-panel', '<div class="panel"> <div class="heading"> <span class="title">Inventario</span> </div> <div class="content"> <form class="padding10"> <div class="grid no-margin"> <div class="row cells3"> <label class="cell padding10">Fornitore</label> <div class="input-control select cell colspan2"> <select onchange="{storeChanged}"> <option value="">Scegli un fornitore...</option> <option value="nada">Nadalin</option> <option value="terminal">Terminal</option> <option value="discoteca">Discoteca Laziale</option> </select> </div> </div> <div class="row cells3" if="{isCurrent(\'nada\')}"> <label class="cell padding10">Tipo</label> <div class="input-control select cell colspan2"> <select onchange="{typeChanged}"> <option value="dvd" __selected="{type === \'dvd\'}">DVD</option> <option value="br" __selected="{type === \'br\'}">Blu-ray</option> <option value="ar" __selected="{type === \'ar\'}">A&amp;R</option> </select> </div> </div> <div class="row cells3" if="{isCurrent(\'terminal\')}"> <label class="cell padding10">Tipo</label> <div class="input-control select cell colspan2"> <select onchange="{typeChanged}"> <option value="all" __selected="{type === \'all\'}">Tutto</option> <option value="dvd" __selected="{type === \'dvd\'}">Home Video</option> <option value="books" __selected="{type === \'books\'}">Libri</option> <option value="merchandising" __selected="{type === \'merchandising\'}">Merchandising</option> <option value="music" __selected="{type === \'music\'}">Musica</option> </select> </div> </div> <div class="row cells3" if="{isCurrent(\'discoteca\')}"> <label class="cell padding10">Catalogo</label> <div class="input-control file cell colspan2" data-role="input"> <input type="file" onchange="{catalogFileChanged}"> <button class="button"> <span class="mif-folder"></span> </button> </div> </div> <div class="row cells3"> <label class="cell padding10">Stock</label> <div class="input-control file cell colspan2" data-role="input"> <input type="file" __disabled="{isCurrent(\'\')}" onchange="{fileChanged}"> <button class="button"> <span class="mif-folder"></span> </button> </div> </div> <button class="button" __disabled="{missingInput()}" onclick="{resetPreviousClicked}">Azzera precedente</button> <fieldset __disabled="{missingInput()}"> <legend>Nuovo inventario</legend> <button id="it" class="button" onclick="{newStockClicked}">IT</button> <button id="uk" class="button" onclick="{newStockClicked}">UK</button> <button id="fr" class="button" onclick="{newStockClicked}">FR</button> <button id="de" class="button" onclick="{newStockClicked}">DE</button> <button id="es" class="button" onclick="{newStockClicked}">ES</button> </fieldset> </div> </form> </div> </div>', '', '', function(opts) {
   var filesystem = require('../filesystem')
   var stock = require('./stock')
+
+  this.store = ''
+
+  this.isCurrent = function(store) {
+    return this.store === store
+  }.bind(this)
+
+  this.missingInput = function() {
+    if (this.isCurrent('')) return true
+    if (this.file === undefined) return true
+    if (this.isCurrent('discoteca') && this.catalogFile === undefined) return true
+  }.bind(this)
 
   this.storeChanged = function(event) {
     this.store = event.target.value
@@ -10,11 +22,19 @@ riot.tag2('stock-panel', '<div class="panel"> <div class="heading"> <span class=
     this.type = event.target.value
   }.bind(this)
 
-  this.fileChanged = function(event) {
-    var file = event.target.files[0]
-    var fileName = file.name.toLowerCase()
+  this.catalogFileChanged = function(event) {
+    this.catalogFile = event.target.files[0]
+    var name = this.store + '_catalog'
+    filesystem.read(this.catalogFile, function(results) {
+      filesystem.cache(results, name)
+    })
+  }.bind(this)
 
-    if (fileName.indexOf('tutto') >= 0) {
+  this.fileChanged = function(event) {
+    this.file = event.target.files[0]
+    var fileName = this.file.name.toLowerCase()
+
+    if (fileName.indexOf('tutto') >= 0 || fileName.indexOf('completo') >= 0) {
       this.type = 'all'
     } else if (fileName.indexOf('dvd') >= 0 || fileName.indexOf('home_video') >= 0) {
       this.type = 'dvd'
@@ -30,7 +50,14 @@ riot.tag2('stock-panel', '<div class="panel"> <div class="heading"> <span class=
       this.type = 'ar'
     }
 
-    filesystem.cache(file, this.store + '_' + this.type)
+    var name = this.store + '_' + this.type
+
+    var self = this
+    filesystem.read(this.file, function(results) {
+      filesystem.cache(results, name, function() {
+        stock.onCached(self.store, self.type)
+      })
+    })
   }.bind(this)
 
   this.resetPreviousClicked = function(event) {
