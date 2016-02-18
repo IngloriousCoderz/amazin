@@ -30,10 +30,10 @@ module.exports = {
   },
 
   getSku: function(barcode, type) {
-    return barcode + '_DISCOTECA_' + (type === 'dvd' ? 'DVD' : 'CD');
+    return barcode + '_DISCOTECA';//_' + (type === 'dvd' ? 'DVD' : 'CD');
   },
 
-  getQuantity: function(quantity) {
+  getQuantity: function(quantity, type) {
     return quantity;
   },
 

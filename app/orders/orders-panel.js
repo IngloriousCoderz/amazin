@@ -5,7 +5,9 @@ riot.tag2('orders-panel', '<div class="panel"> <div class="heading"> <span class
   this.fileChanged = function(event) {
     var file = event.target.files[0]
     var name = 'orders'
-    filesystem.cache(file, name)
+    filesystem.read(file, function(results) {
+      filesystem.cache(results, name)
+    })
   }.bind(this)
 
   this.salesListClicked = function(event) {

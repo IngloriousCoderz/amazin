@@ -45,6 +45,7 @@ module.exports = {
       header: true,
       dynamicTyping: false,
       skipEmptyLines: true,
+      encoding: 'iso-8859-1',
 
       complete: onComplete,
 

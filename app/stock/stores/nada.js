@@ -26,10 +26,11 @@ module.exports = {
   },
 
   getSku: function(barcode, type) {
-    return barcode + '_NADA' + (type === 'dvd' ? 'OK' : '');
+    // return barcode + '_NADA' + (type === 'dvd' ? 'OK' : '');
+    return barcode + '_NADA' + type.toUpperCase();
   },
 
-  getQuantity: function(quantity) {
+  getQuantity: function(quantity, type) {
     if (quantity >= 1 && quantity <= 5) quantity = 1;
     else if (quantity >= 6 && quantity <= 10) quantity = 2;
     else if (quantity >= 11 && quantity <= 20) quantity = 3;

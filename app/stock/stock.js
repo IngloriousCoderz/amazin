@@ -1,3 +1,4 @@
+var moment = require('moment');
 var Papa = require('papaparse');
 var jsonFile = require('jsonfile');
 
@@ -51,7 +52,7 @@ function isBlacklisted(store, fields) {
 
 function addItem(stock, fields, values, store, type) {
   var barcode = fields.barcode;
-  var sku = store.getSku(barcode, type);
+  var sku = store.getSku(barcode, type) + moment().format('DDMM');
 
   barcode = values.barcode !== '' ? values.barcode : barcode;
 
@@ -99,7 +100,7 @@ function createStock(store, type, data, market) {
 
     var quantity = values.quantity;
     if (isNaN(quantity) || quantity <= 0) return;
-    values.quantity = store.getQuantity(quantity);
+    values.quantity = store.getQuantity(quantity, type);
 
     var price = values.price;
     price = price.replace(',', '.');

@@ -47,6 +47,18 @@ function createSalesList(data) {
 
 function createShippingConfirmation(data) {
   var shipping = [];
+
+  shipping.push([
+    'order-id',
+    'order-item-id',
+    'quantity',
+    'ship-date',
+    'carrier-code',
+    'carrier-name',
+    'tracking-number',
+    'ship-method'
+  ]);
+
   data.forEach(function(item, index) {
     shipping.push([
       item['order-id'],
