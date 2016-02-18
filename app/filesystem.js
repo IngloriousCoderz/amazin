@@ -1,5 +1,5 @@
 var moment = require('moment');
-// var XLSX = require('xlsx');
+var XLSX = require('xlsx');
 var Papa = require('papaparse');
 var jsonFile = require('jsonfile');
 var filesaver = require('filesaver.js');
@@ -24,18 +24,18 @@ module.exports = {
 
   read: function(file, onRead) {
     var self = this;
-    // if (file.type === 'application/vnd.ms-excel' || file.name !== undefined && file.name.indexOf('.xls') >= 0) {
-    //   var reader = new FileReader();
-    //   reader.onload = function(e) {
-    //     var data = e.target.result;
-    //     var workbook = XLSX.read(data, {
-    //       type: 'binary'
-    //     });
-    //     self.read(XLSX.utils.sheet_to_csv(workbook.Sheets[workbook.SheetNames[0]]), name);
-    //   }
-    //   reader.readAsBinaryString(file);
-    //   return;
-    // }
+    if (file.type === 'application/vnd.ms-excel' || file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var data = e.target.result;
+        var workbook = XLSX.read(data, {
+          type: 'binary'
+        });
+        self.read(XLSX.utils.sheet_to_csv(workbook.Sheets[workbook.SheetNames[0]]), onRead);
+      }
+      reader.readAsBinaryString(file);
+      return;
+    }
 
     this.parse(file, onRead);
   },

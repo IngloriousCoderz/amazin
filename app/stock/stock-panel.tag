@@ -25,7 +25,7 @@
               <select onchange={ typeChanged }>
                 <option value="dvd" selected={ type === 'dvd' }>DVD</option>
                 <option value="br" selected={ type === 'br' }>Blu-ray</option>
-                <option value="ar" selected={ type === 'ar' }>A&amp;R</option>
+                <option value="ar" selected={ type === 'a&amp;r' }>A&amp;R</option>
               </select>
             </div>
           </div>
@@ -133,7 +133,7 @@
     } else if (fileName.indexOf('br') >= 0) {
       this.type = 'br'
     } else if (fileName.indexOf('a&r') >= 0) {
-      this.type = 'ar'
+      this.type = 'a&r'
     }
 
     var name = this.store + '_' + this.type
