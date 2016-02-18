@@ -56,7 +56,7 @@
           <div class="row cells3">
             <label class="cell padding10">Stock</label>
             <div class="input-control file cell colspan2" data-role="input">
-              <input type="file" disabled={ isCurrent('') } onchange={ fileChanged }>
+              <input type="file" disabled={ isCurrent('') || missingCatalog() } onchange={ fileChanged }>
               <button class="button">
                 <span class="mif-folder"></span>
               </button>
@@ -88,10 +88,14 @@
     return this.store === store
   }
 
+  missingCatalog() {
+    return this.isCurrent('discoteca') && this.catalogFile === undefined
+  }
+
   missingInput() {
     if (this.isCurrent('')) return true
     if (this.file === undefined) return true
-    if (this.isCurrent('discoteca') && this.catalogFile === undefined) return true
+    if (missingCatalog()) return true
   }
 
   storeChanged(event) {
