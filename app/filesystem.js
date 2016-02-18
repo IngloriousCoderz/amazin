@@ -13,6 +13,10 @@ function string2byteArray(s) {
   return buf;
 }
 
+function isExcel(file) {
+  return file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && file.name.indexOf('.xlsx') >= 0 || file.type === 'application/vnd.ms-excel' && file.name.indexOf('.xls') >= 0;
+}
+
 module.exports = {
   getFileName: function(name, type) {
     return name + '_' + moment().format('YYYY-MM-DD') + '.' + type;
@@ -24,7 +28,7 @@ module.exports = {
 
   read: function(file, onRead) {
     var self = this;
-    if (file.type === 'application/vnd.ms-excel' || file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+    if (isExcel(file)) {
       var reader = new FileReader();
       reader.onload = function(e) {
         var data = e.target.result;
