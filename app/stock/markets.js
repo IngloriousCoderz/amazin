@@ -1,42 +1,34 @@
+var $ = require('jquery');
+
+var market = {
+  formatPrice: function(price) {
+    return price.replace('.', ',');
+  },
+  itemNote: '',
+  expeditedShipping: 'N',
+  willShipInternationally: null
+};
+
 module.exports = {
-  it: {
-    formatPrice: function(price) {
-      return price.replace('.', ',');
-    },
+  it: $.extend({}, market, {
     itemNote: 'Nuovo, originale e sigillato',
     expeditedShipping: 23,
     willShipInternationally: 26
-  },
-  uk: {
+  }),
+  uk: $.extend({}, market, {
     formatPrice: function(price) {
       return price;
     },
-    itemNote: '',
-    expeditedShipping: 'N',
     willShipInternationally: 6
-  },
-  fr: {
-    formatPrice: function(price) {
-      return price.replace('.', ',');
-    },
+  }),
+  fr: $.extend({}, market, {
     itemNote: 'Neuf',
-    expeditedShipping: 'N',
     willShipInternationally: 19
-  },
-  de: {
-    formatPrice: function(price) {
-      return price.replace('.', ',');
-    },
-    itemNote: '',
-    expeditedShipping: 'N',
+  }),
+  de: $.extend({}, market, {
     willShipInternationally: 10
-  },
-  es: {
-    formatPrice: function(price) {
-      return price.replace('.', ',');
-    },
-    itemNote: '',
-    expeditedShipping: 'N',
+  }),
+  es: $.extend({}, market, {
     willShipInternationally: 30
-  }
+  })
 };
