@@ -52,7 +52,7 @@ function isBlacklisted(store, fields) {
 
 function addItem(stock, fields, values, store, type) {
   var barcode = fields.barcode;
-  var sku = store.getSku(barcode, type) + moment().format('DDMM');
+  var sku = store.getSku(barcode, type) + moment().format('MMM').toUpperCase();
 
   barcode = values.barcode !== '' ? values.barcode : barcode;
 
