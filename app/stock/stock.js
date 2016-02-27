@@ -151,6 +151,22 @@ module.exports = {
     stores[store].onCached(type);
   },
 
+  getCachedStocks: function(store, type) {
+    return filesystem.getFiles('cache/', store + '_' + type);
+  },
+
+  resetStock: function(store, type, fileName) {
+    jsonFile.readFile('cache/' + fileName, function(err, obj) {
+      var csv = Papa.unparse(resetStock(stores[store], type, obj.data), {
+        quotes: false,
+        delimiter: '\t'
+      });
+
+      var fileName = filesystem.getFileName('azzeramento_' + store + '_' + type, 'txt');
+      filesystem.save(csv, fileName);
+    });
+  },
+
   createStock: function(store, type, market) {
     jsonFile.readFile('cache/' + filesystem.getFileName(store + '_' + type, 'json'), function(err, obj) {
       var csv = Papa.unparse(createStock(stores[store], type, obj.data, market), {
@@ -159,18 +175,6 @@ module.exports = {
       });
 
       var filename = filesystem.getFileName('inventario_' + store + '_' + type + '_' + market, 'txt');
-      filesystem.save(csv, filename);
-    });
-  },
-
-  resetPrevious: function(store, type) {
-    jsonFile.readFile('cache/' + filesystem.getPreviousFileName(store + '_' + type, 'json'), function(err, obj) {
-      var csv = Papa.unparse(resetStock(stores[store], type, obj.data), {
-        quotes: false,
-        delimiter: '\t'
-      });
-
-      var filename = filesystem.getFileName('azzeramento_' + store + '_' + type, 'txt');
       filesystem.save(csv, filename);
     });
   }

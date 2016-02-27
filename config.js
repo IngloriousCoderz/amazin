@@ -19,6 +19,7 @@ System.config({
     "core-js": "npm:core-js@1.2.6",
     "css": "github:systemjs/plugin-css@0.1.20",
     "filesaver.js": "npm:filesaver.js@0.2.0",
+    "fs": "github:jspm/nodelibs-fs@0.1.2",
     "jquery": "npm:jquery@2.2.0",
     "jsonfile": "npm:jsonfile@2.2.3",
     "metro": "github:olton/Metro-UI-CSS@3.0.13",

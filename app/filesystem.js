@@ -1,4 +1,5 @@
 var moment = require('moment');
+var fs = require('fs');
 var XLSX = require('xlsx');
 var Papa = require('papaparse');
 var jsonFile = require('jsonfile');
@@ -22,8 +23,13 @@ module.exports = {
     return name + '_' + moment().format('YYYY-MM-DD') + '.' + type;
   },
 
-  getPreviousFileName: function(name, type) {
-    return name + '_' + moment().subtract(1, 'days').format('YYYY-MM-DD') + '.' + type;
+  getFiles: function(dir, prefix) {
+    var files = fs.readdirSync(dir).filter(function(fileName) {
+      return fileName.startsWith(prefix);
+    });
+    files.sort()
+    files.reverse();
+    return files;
   },
 
   read: function(file, onRead) {
