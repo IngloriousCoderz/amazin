@@ -7,7 +7,7 @@ gulp.task('clean', function(cb) {
 });
 
 gulp.task('build', function() {
-  return gulp.src('main.js')
+  return gulp.src('app/amazin.js')
   .pipe($.sourcemaps.init())
   .pipe($.jspm())
   .pipe($.sourcemaps.write('.'))
