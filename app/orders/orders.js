@@ -1,29 +1,29 @@
-var moment = require('moment');
-var Papa = require('papaparse');
-var jsonFile = require('jsonfile');
+var moment = require('moment')
+var Papa = require('papaparse')
+var jsonFile = require('jsonfile')
 
-var filesystem = require('../filesystem');
+var filesystem = require('../filesystem')
 
 function createSalesList(data) {
-  var workItems = [];
+  var workItems = []
 
   data.forEach(function(item, index) {
-    var name = item['recipient-name'];
-    var addr1 = item['ship-address-1'];
-    var addr2 = item['ship-address-2'];
-    var addr3 = item['ship-address-3'];
-    var city = item['ship-city'];
-    var state = item['ship-state'];
-    var zip = item['ship-postal-code'];
-    var country = item['ship-country'];
-    var phone = item['ship-phone-number'];
+    var name = item['recipient-name']
+    var addr1 = item['ship-address-1']
+    var addr2 = item['ship-address-2']
+    var addr3 = item['ship-address-3']
+    var city = item['ship-city']
+    var state = item['ship-state']
+    var zip = item['ship-postal-code']
+    var country = item['ship-country']
+    var phone = item['ship-phone-number']
 
-    locality = city;
+    locality = city
     if (zip.length > 0) {
-      locality = zip + ' ' + locality;
+      locality = zip + ' ' + locality
     }
     if (state.length > 0) {
-      locality += ' (' + state + ')';
+      locality += ' (' + state + ')'
     }
 
     workItems.push([
@@ -39,14 +39,14 @@ function createSalesList(data) {
       (phone.length > 0 ? phone + '\n' : ''),
       item['shipping-price'],
       item['order-id']
-    ]);
-  });
+    ])
+  })
 
-  return workItems;
+  return workItems
 }
 
 function createShippingConfirmation(data) {
-  var shipping = [];
+  var shipping = []
 
   shipping.push([
     'order-id',
@@ -57,7 +57,7 @@ function createShippingConfirmation(data) {
     'carrier-name',
     'tracking-number',
     'ship-method'
-  ]);
+  ])
 
   data.forEach(function(item, index) {
     shipping.push([
@@ -69,9 +69,9 @@ function createShippingConfirmation(data) {
       '',
       'Priority',
       ''
-    ]);
-  });
-  return shipping;
+    ])
+  })
+  return shipping
 }
 
 module.exports = {
@@ -79,12 +79,12 @@ module.exports = {
     jsonFile.readFile('cache/' + filesystem.getFileName('orders', 'json'), function(err, obj) {
       var csv = Papa.unparse(createSalesList(obj.data), {
         quotes: true,
-        delimiter: ';'
-      });
+        delimiter: ''
+      })
 
-      var filename = filesystem.getFileName('elenco-vendite', 'csv');
-      filesystem.save(csv, filename);
-    });
+      var filename = filesystem.getFileName('elenco-vendite', 'csv')
+      filesystem.save(csv, filename)
+    })
   },
 
   createShippingConfirmation: function() {
@@ -92,10 +92,10 @@ module.exports = {
       var csv = Papa.unparse(createShippingConfirmation(obj.data), {
         quotes: false,
         delimiter: '\t'
-      });
+      })
 
-      var filename = filesystem.getFileName('conferma-spedizioni', 'txt');
-      filesystem.save(csv, filename);
-    });
+      var filename = filesystem.getFileName('conferma-spedizioni', 'txt')
+      filesystem.save(csv, filename)
+    })
   }
-};
+}

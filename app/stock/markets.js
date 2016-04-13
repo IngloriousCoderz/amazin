@@ -1,13 +1,13 @@
-var $ = require('jquery');
+var $ = require('jquery')
 
 var market = {
   formatPrice: function(price) {
-    return price.replace('.', ',');
+    return price.replace('.', ',')
   },
   itemNote: '',
   expeditedShipping: 'N',
   willShipInternationally: null
-};
+}
 
 module.exports = {
   it: $.extend({}, market, {
@@ -17,7 +17,7 @@ module.exports = {
   }),
   uk: $.extend({}, market, {
     formatPrice: function(price) {
-      return price;
+      return price
     },
     willShipInternationally: 6
   }),
@@ -31,4 +31,4 @@ module.exports = {
   es: $.extend({}, market, {
     willShipInternationally: 30
   })
-};
+}

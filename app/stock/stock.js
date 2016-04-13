@@ -1,18 +1,18 @@
-var moment = require('moment');
-var Papa = require('papaparse');
-var jsonFile = require('jsonfile');
+var moment = require('moment')
+var Papa = require('papaparse')
+var jsonFile = require('jsonfile')
 
-var filesystem = require('../filesystem');
-var nada = require('./stores/nada');
-var terminal = require('./stores/terminal');
-var discoteca = require('./stores/discoteca');
-var markets = require('./markets');
+var filesystem = require('../filesystem')
+var nada = require('./stores/nada')
+var terminal = require('./stores/terminal')
+var discoteca = require('./stores/discoteca')
+var markets = require('./markets')
 
 var stores = {
   nada: nada,
   terminal: terminal,
   discoteca: discoteca
-};
+}
 
 function addHeader(stock) {
   stock.push([
@@ -29,32 +29,32 @@ function addHeader(stock) {
     'expedited-shipping',
     'will-ship-internationally',
     'fulfillment-center-id'
-  ]);
+  ])
 }
 
 function cleanBarcode(barcode) {
-  var barcodes = /\d+/.exec(barcode);
-  if (barcodes === null) return null;
+  var barcodes = /\d+/.exec(barcode)
+  if (barcodes === null) return null
 
-  barcode = barcodes[0];
-  if (barcode === undefined) return null;
+  barcode = barcodes[0]
+  if (barcode === undefined) return null
 
-  for (i = barcode.length; i < 13; i++) {
-    barcode = '0' + barcode;
+  for (i = barcode.length i < 13 i++) {
+    barcode = '0' + barcode
   }
 
-  return barcode;
+  return barcode
 }
 
 function isBlacklisted(store, fields) {
-  return store.isBlacklisted(fields) || fields.barcode === null;
+  return store.isBlacklisted(fields) || fields.barcode === null
 }
 
 function addItem(stock, fields, values, store, type) {
-  var barcode = fields.barcode;
-  var sku = store.getSku(barcode, type) + moment().format('MMM').toUpperCase();
+  var barcode = fields.barcode
+  var sku = store.getSku(barcode, type) + moment().format('MMM').toUpperCase()
 
-  barcode = values.barcode !== '' ? values.barcode : barcode;
+  barcode = values.barcode !== '' ? values.barcode : barcode
 
   stock.push([
     sku,
@@ -70,18 +70,18 @@ function addItem(stock, fields, values, store, type) {
     values.expeditedShipping,
     values.willShipInternationally,
     values.fulfillmentCenterId
-  ]);
+  ])
 }
 
 function createStock(store, type, data, market) {
-  var stock = [];
-  addHeader(stock);
+  var stock = []
+  addHeader(stock)
 
   data.forEach(function(item, index) {
-    var fields = store.getFields(item);
-    fields.barcode = cleanBarcode(fields.barcode);
+    var fields = store.getFields(item)
+    fields.barcode = cleanBarcode(fields.barcode)
 
-    if (isBlacklisted(store, fields)) return;
+    if (isBlacklisted(store, fields)) return
 
     var values = {
       barcode: fields.barcode,
@@ -96,34 +96,34 @@ function createStock(store, type, data, market) {
       expeditedShipping: markets[market].expeditedShipping,
       willShipInternationally: markets[market].willShipInternationally,
       fulfillmentCenterId: ''
-    };
+    }
 
-    var quantity = values.quantity;
-    if (isNaN(quantity) || quantity <= 0) return;
-    values.quantity = store.getQuantity(quantity, type);
+    var quantity = values.quantity
+    if (isNaN(quantity) || quantity <= 0) return
+    values.quantity = store.getQuantity(quantity, type)
 
-    var price = values.price;
-    price = price.replace(',', '.');
-    price = price.replace(/[^\d\.]/g, '') * store.markup;
-    price = price.toFixed(2);
-    price = markets[market].formatPrice(price);
-    values.price = price;
+    var price = values.price
+    price = price.replace(',', '.')
+    price = price.replace(/[^\d\.]/g, '') * store.markup
+    price = price.toFixed(2)
+    price = markets[market].formatPrice(price)
+    values.price = price
 
-    addItem(stock, fields, values, store, type);
-  });
+    addItem(stock, fields, values, store, type)
+  })
 
-  return stock;
+  return stock
 }
 
 function resetStock(store, type, data) {
-  var stock = [];
-  addHeader(stock);
+  var stock = []
+  addHeader(stock)
 
   data.forEach(function(item, index) {
-    var fields = store.getFields(item);
-    fields.barcode = cleanBarcode(fields.barcode);
+    var fields = store.getFields(item)
+    fields.barcode = cleanBarcode(fields.barcode)
 
-    if (isBlacklisted(store, fields)) return;
+    if (isBlacklisted(store, fields)) return
 
     var values = {
       barcode: '',
@@ -138,21 +138,21 @@ function resetStock(store, type, data) {
       expeditedShipping: '',
       willShipInternationally: '',
       fulfillmentCenterId: ''
-    };
+    }
 
-    addItem(stock, fields, values, store, type);
-  });
+    addItem(stock, fields, values, store, type)
+  })
 
-  return stock;
-};
+  return stock
+}
 
 module.exports = {
   onCached: function(store, type) {
-    stores[store].onCached(type);
+    stores[store].onCached(type)
   },
 
   getCachedStocks: function(store, type) {
-    return filesystem.getFiles('cache/', store + '_' + type);
+    return filesystem.getFiles('cache/', store + '_' + type)
   },
 
   resetStock: function(store, type, fileName) {
@@ -160,11 +160,11 @@ module.exports = {
       var csv = Papa.unparse(resetStock(stores[store], type, obj.data), {
         quotes: false,
         delimiter: '\t'
-      });
+      })
 
-      var fileName = filesystem.getFileName('azzeramento_' + store + '_' + type, 'txt');
-      filesystem.save(csv, fileName);
-    });
+      var fileName = filesystem.getFileName('azzeramento_' + store + '_' + type, 'txt')
+      filesystem.save(csv, fileName)
+    })
   },
 
   createStock: function(store, type, market) {
@@ -172,10 +172,10 @@ module.exports = {
       var csv = Papa.unparse(createStock(stores[store], type, obj.data, market), {
         quotes: false,
         delimiter: '\t'
-      });
+      })
 
-      var filename = filesystem.getFileName('inventario_' + store + '_' + type + '_' + market, 'txt');
-      filesystem.save(csv, filename);
-    });
+      var filename = filesystem.getFileName('inventario_' + store + '_' + type + '_' + market, 'txt')
+      filesystem.save(csv, filename)
+    })
   }
-};
+}
