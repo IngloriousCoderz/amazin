@@ -5,15 +5,6 @@ var Papa = require('papaparse')
 var jsonFile = require('jsonfile')
 var filesaver = require('filesaver.js')
 
-function string2byteArray(s) {
-  var buf = new ArrayBuffer(s.length)
-  var view = new Uint8Array(buf)
-  for (var i = 0; i < s.length; i++) {
-    view[i] = s.charCodeAt(i) & 0xFF
-  }
-  return buf
-}
-
 function isExcel(file) {
   return file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && file.name.indexOf('.xlsx') >= 0 || file.type === 'application/vnd.ms-excel' && file.name.indexOf('.xls') >= 0
 }
@@ -76,7 +67,7 @@ module.exports = {
   },
 
   save: function(file, name) {
-    filesaver.saveAs(new Blob([string2byteArray(file)], {
+    filesaver.saveAs(new Blob([file], {
       type: "application/octet-stream"
     }), name)
   }
