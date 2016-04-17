@@ -15,6 +15,7 @@
                 <option value="nada">Nadalin</option>
                 <option value="terminal">Terminal</option>
                 <option value="discoteca">Discoteca Laziale</option>
+                <option value="centrol">Centro Libri</option>
               </select>
             </div>
           </div>
@@ -45,6 +46,17 @@
             </div>
           </div>
 
+          <div class="row cells3" if={ isCurrentStore('centrol') }>
+            <label class="cell padding10">Tipo</label>
+            <div class="input-control select cell colspan2">
+              <select onchange={ typeChanged }>
+                <option value="" selected={ isCurrentType('') }>Scegli un tipo...</option>
+                <option value="scolastica" selected={ isCurrentType('scolastica') }>Scolastica</option>
+                <option value="varia" selected={ isCurrentType('varia') }>Varia</option>
+              </select>
+            </div>
+          </div>
+
           <fieldset class="row cells3" disabled={ missingStore() || missingType() }>
             <legend>Azzera precedente</legend>
             <div class="input-control select cell colspan2 no-margin-left">
@@ -60,6 +72,16 @@
             <legend>Nuovo inventario</legend>
 
             <div class="row cells3" if={ isCurrentStore('discoteca') }>
+              <label class="cell padding10">Catalogo</label>
+              <div class="input-control file cell colspan2" data-role="input">
+                <input type="file" onchange={ catalogFileChanged }>
+                <button class="button">
+                  <span class="mif-folder"></span>
+                </button>
+              </div>
+            </div>
+
+            <div class="row cells3" if={ isCurrentStore('centrol') }>
               <label class="cell padding10">Catalogo</label>
               <div class="input-control file cell colspan2" data-role="input">
                 <input type="file" onchange={ catalogFileChanged }>
@@ -123,7 +145,7 @@
   }
 
   missingCatalogFile() {
-    return this.isCurrentStore('discoteca') && this.catalogFile === undefined
+    return (this.isCurrentStore('discoteca')|| this.isCurrentStore('centrol')) && this.catalogFile === undefined
   }
 
   missingStockFile() {
@@ -136,7 +158,7 @@
 
   storeChanged(event) {
     this.store = event.target.value
-    this.type = this.isCurrentStore('discoteca') ? 'stock' : ''
+    this.type = (this.isCurrentStore('discoteca')|| this.isCurrentStore('centrol')) ? 'stock' : ''
     this.previousStock = ''
     this.stockFile = undefined
   }
@@ -173,6 +195,10 @@
       this.type = 'br'
     } else if (fileName.indexOf('a&r') >= 0) {
       this.type = 'a&r'
+    } else if (fileName.indexOf('scolastica') >= 0) {
+      this.type = 'scolastica'
+    } else if (fileName.indexOf('varia') >= 0) {
+      this.type = 'varia'
     }
 
     var name = this.store + '_' + this.type

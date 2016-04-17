@@ -2,10 +2,7 @@ var jsonFile = require('jsonfile')
 
 var filesystem = require('../../filesystem')
 
-var BARCODE_BLACKLIST = [
-  // 'rental',
-  // 'EX RENTAL'
-]
+var BARCODE_BLACKLIST = []
 
 module.exports = {
   markup: 2.15,
@@ -23,19 +20,19 @@ module.exports = {
 
   getFields: function(item) {
     return {
-      barcode: item['ean'],
-      quantity: item['disponibilita'],
+      barcode: item['ean13'],
+      quantity: item['qta'],
       price: item['prezzo']
     }
   },
 
   getSku: function(barcode, type) {
-    return barcode + '_DISCOTECA'//_' + (type === 'dvd' ? 'DVD' : 'CD')
+    return barcode + '_CENTROL_'//_' + (type === 'dvd' ? 'DVD' : 'CD')
   },
 
   onCached: function(type) {
-    jsonFile.readFile('cache/' + filesystem.getFileName('discoteca_' + type, 'json'), function(err, stockObj) {
-      jsonFile.readFile('cache/' + filesystem.getFileName('discoteca_catalog', 'json'), function(err, catalogObj) {
+    jsonFile.readFile('cache/' + filesystem.getFileName('centrol_' + type, 'json'), function(err, stockObj) {
+      jsonFile.readFile('cache/' + filesystem.getFileName('centrol_catalog', 'json'), function(err, catalogObj) {
         var prices = {}
         catalogObj.data.map(function(catalogResult) {
           var price = catalogResult.prezzo
@@ -61,7 +58,7 @@ module.exports = {
           stockResult.prezzo = price
         }
 
-        filesystem.cache(stockObj, 'discoteca_' + type)
+        filesystem.cache(stockObj, 'centrol_' + type)
       })
     })
   }

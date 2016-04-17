@@ -6,12 +6,14 @@ var filesystem = require('../filesystem')
 var nada = require('./stores/nada')
 var terminal = require('./stores/terminal')
 var discoteca = require('./stores/discoteca')
+var centrol = require('./stores/centrol')
 var markets = require('./markets')
 
 var stores = {
   nada: nada,
   terminal: terminal,
-  discoteca: discoteca
+  discoteca: discoteca,
+  centrol: centrol
 }
 
 function addHeader(stock) {
@@ -48,6 +50,14 @@ function cleanBarcode(barcode) {
 
 function isBlacklisted(store, fields) {
   return store.isBlacklisted(fields) || fields.barcode === null
+}
+
+function getQuantity(quantity, type) {
+  if (quantity >= 1 && quantity < 5) quantity = 1
+  else if (quantity >= 5 && quantity < 10) quantity = 2
+  else if (quantity >= 10 && quantity < 25) quantity = 3
+  else if (quantity >= 25) quantity = 5
+  return quantity
 }
 
 function addItem(stock, fields, values, store, type) {
@@ -100,7 +110,7 @@ function createStock(store, type, data, market) {
 
     var quantity = values.quantity
     if (isNaN(quantity) || quantity <= 0) return
-    values.quantity = store.getQuantity(quantity, type)
+    values.quantity = getQuantity(quantity, type)
 
     var price = values.price
     price = price.replace(',', '.')
