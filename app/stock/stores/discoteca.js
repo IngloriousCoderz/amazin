@@ -2,13 +2,12 @@ var jsonFile = require('jsonfile')
 
 var filesystem = require('../../filesystem')
 
-var BARCODE_BLACKLIST = [
-  // 'rental',
-  // 'EX RENTAL'
-]
+var BARCODE_BLACKLIST = []
 
 module.exports = {
-  markup: 2.15,
+  getMarkup: function (type) {
+    return 2.15
+  },
 
   isBlacklisted: function(fields) {
     var barcode = fields.barcode

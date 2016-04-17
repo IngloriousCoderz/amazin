@@ -44,7 +44,7 @@ riot.tag2('stock-panel', '<div class="panel"> <div class="heading"> <span class=
 
   this.storeChanged = function(event) {
     this.store = event.target.value
-    this.type = (this.isCurrentStore('discoteca')|| this.isCurrentStore('centrol')) ? 'stock' : ''
+    this.type = this.isCurrentStore('discoteca') ? 'stock' : ''
     this.previousStock = ''
     this.stockFile = undefined
   }.bind(this)

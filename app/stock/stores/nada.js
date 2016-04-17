@@ -4,7 +4,9 @@ var BARCODE_BLACKLIST = [
 ]
 
 module.exports = {
-  markup: 2,
+  getMarkup: function(type) {
+    return 2
+  },
 
   isBlacklisted: function(fields) {
     var barcode = fields.barcode

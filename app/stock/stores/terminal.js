@@ -7,7 +7,9 @@ var TITLE_BLACKLIST = [
 ]
 
 module.exports = {
-  markup: 1.25,
+  getMarkup: function(type) {
+    return 1.25
+  },
 
   isBlacklisted: function(fields) {
     var title = fields.title

@@ -5,7 +5,14 @@ var filesystem = require('../../filesystem')
 var BARCODE_BLACKLIST = []
 
 module.exports = {
-  markup: 2.15,
+  getMarkup: function(type) {
+    switch (type) {
+      case 'scolastica':
+        return 1.75
+      case 'varia':
+        return 2
+    }
+  },
 
   isBlacklisted: function(fields) {
     var barcode = fields.barcode
@@ -27,7 +34,7 @@ module.exports = {
   },
 
   getSku: function(barcode, type) {
-    return barcode + '_CENTROL_'//_' + (type === 'dvd' ? 'DVD' : 'CD')
+    return barcode + '_CENTROL_' //_' + (type === 'dvd' ? 'DVD' : 'CD')
   },
 
   onCached: function(type) {
@@ -37,19 +44,19 @@ module.exports = {
         catalogObj.data.map(function(catalogResult) {
           var price = catalogResult.prezzo
           if (price !== undefined) {
-            prices[catalogResult.ean] = price
+            prices[catalogResult.ean13] = price
           }
         })
 
         for (var i = stockObj.data.length - 1; i >= 0; i--) {
           var stockResult = stockObj.data[i]
 
-          if (stockResult.disponibilita === '0') {
+          if (stockResult.qta === '0') {
             stockObj.data.splice(i, 1)
             continue
           }
 
-          var price = prices[stockResult.ean]
+          var price = prices[stockResult.ean13]
           if (price === undefined) {
             stockObj.data.splice(i, 1)
             continue

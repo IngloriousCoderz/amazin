@@ -114,7 +114,7 @@ function createStock(store, type, data, market) {
 
     var price = values.price
     price = price.replace(',', '.')
-    price = price.replace(/[^\d\.]/g, '') * store.markup
+    price = price.replace(/[^\d\.]/g, '') * store.getMarkup(type)
     price = price.toFixed(2)
     price = markets[market].formatPrice(price)
     values.price = price
