@@ -38,8 +38,8 @@ module.exports = {
   },
 
   onCached: function(type) {
-    jsonFile.readFile('cache/' + filesystem.getFileName('centrol_' + type, 'json'), function(err, stockObj) {
-      jsonFile.readFile('cache/' + filesystem.getFileName('centrol_catalog', 'json'), function(err, catalogObj) {
+    jsonFile.readFile('cache/' + filesystem.getFileName('centrol_' + type + '_stock', 'json'), function(err, stockObj) {
+      jsonFile.readFile('cache/' + filesystem.getFileName('centrol_' + type + '_catalog', 'json'), function(err, catalogObj) {
         var prices = {}
         catalogObj.data.map(function(catalogResult) {
           var price = catalogResult.prezzo

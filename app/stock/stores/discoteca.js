@@ -33,7 +33,7 @@ module.exports = {
   },
 
   onCached: function(type) {
-    jsonFile.readFile('cache/' + filesystem.getFileName('discoteca_' + type, 'json'), function(err, stockObj) {
+    jsonFile.readFile('cache/' + filesystem.getFileName('discoteca_stock', 'json'), function(err, stockObj) {
       jsonFile.readFile('cache/' + filesystem.getFileName('discoteca_catalog', 'json'), function(err, catalogObj) {
         var prices = {}
         catalogObj.data.map(function(catalogResult) {

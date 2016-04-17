@@ -55,7 +55,9 @@ riot.tag2('stock-panel', '<div class="panel"> <div class="heading"> <span class=
 
   this.catalogFileChanged = function(event) {
     this.catalogFile = event.target.files[0]
-    var name = this.store + '_catalog'
+    this.type = this.getTypeFromFile(this.catalogFile)
+
+    var name = this.store  + '_' + this.type + '_catalog'
     filesystem.read(this.catalogFile, function(results) {
       filesystem.cache(results, name)
     })
@@ -63,31 +65,9 @@ riot.tag2('stock-panel', '<div class="panel"> <div class="heading"> <span class=
 
   this.stockFileChanged = function(event) {
     this.stockFile = event.target.files[0]
-    var fileName = this.stockFile.name.toLowerCase()
+    this.type = this.getTypeFromFile(this.stockFile)
 
-    if (fileName.indexOf('completo') >= 0) {
-      this.type = 'stock'
-    } else if (fileName.indexOf('tutto') >= 0) {
-      this.type = 'all'
-    } else if (fileName.indexOf('dvd') >= 0 || fileName.indexOf('home_video') >= 0) {
-      this.type = 'dvd'
-    } else if (fileName.indexOf('libri') >= 0) {
-      this.type = 'books'
-    } else if (fileName.indexOf('merchandising') >= 0) {
-      this.type = 'merchandising'
-    } else if (fileName.indexOf('musica') >= 0) {
-      this.type = 'music'
-    } else if (fileName.indexOf('br') >= 0) {
-      this.type = 'br'
-    } else if (fileName.indexOf('a&r') >= 0) {
-      this.type = 'a&r'
-    } else if (fileName.indexOf('scolastica') >= 0) {
-      this.type = 'scolastica'
-    } else if (fileName.indexOf('varia') >= 0) {
-      this.type = 'varia'
-    }
-
-    var name = this.store + '_' + this.type
+    var name = this.store + '_' + this.type + '_stock'
 
     var self = this
     filesystem.read(this.stockFile, function(results) {
@@ -118,4 +98,37 @@ riot.tag2('stock-panel', '<div class="panel"> <div class="heading"> <span class=
   this.resetStockClicked = function(event) {
     stock.resetStock(this.store, this.type, this.previousStock)
   }.bind(this)
+
+  this.getTypeFromFile = function(file)  {
+    var fileName = file.name.toLowerCase()
+    var type = this.type
+    if (type !== '') {
+      return type
+    }
+
+    if (fileName.indexOf('completo') >= 0) {
+      type = 'stock'
+    } else if (fileName.indexOf('tutto') >= 0) {
+      type = 'all'
+    } else if (fileName.indexOf('dvd') >= 0 || fileName.indexOf('home_video') >= 0) {
+      type = 'dvd'
+    } else if (fileName.indexOf('libri') >= 0) {
+      type = 'books'
+    } else if (fileName.indexOf('merchandising') >= 0) {
+      type = 'merchandising'
+    } else if (fileName.indexOf('musica') >= 0) {
+      type = 'music'
+    } else if (fileName.indexOf('br') >= 0) {
+      type = 'br'
+    } else if (fileName.indexOf('a&r') >= 0) {
+      type = 'a&r'
+    } else if (fileName.indexOf('scolastica') >= 0) {
+      type = 'scolastica'
+    } else if (fileName.indexOf('varia') >= 0) {
+      type = 'varia'
+    }
+
+    return type
+  }.bind(this)
+
 }, '{ }');
