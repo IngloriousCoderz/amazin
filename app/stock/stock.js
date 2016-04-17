@@ -39,7 +39,7 @@ function cleanBarcode(barcode) {
   barcode = barcodes[0]
   if (barcode === undefined) return null
 
-  for (i = barcode.length i < 13 i++) {
+  for (i = barcode.length; i < 13; i++) {
     barcode = '0' + barcode
   }
 

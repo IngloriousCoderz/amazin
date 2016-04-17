@@ -48,7 +48,7 @@ module.exports = {
           }
         })
 
-        for (var i = stockObj.data.length - 1 i >= 0 i--) {
+        for (var i = stockObj.data.length - 1; i >= 0; i--) {
           var stockResult = stockObj.data[i]
 
           if (stockResult.disponibilita === '0') {
