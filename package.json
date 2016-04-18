@@ -8,6 +8,7 @@
     "packages": "jspm_packages"
   },
   "scripts": {
+    "postinstall": "jspm install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
     "bundle": "electron-packager ./ amazin --platform=win32 --arch=ia32 --version=0.36.5 --overwrite"
