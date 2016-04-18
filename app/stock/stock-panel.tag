@@ -92,7 +92,7 @@
             </div>
 
             <div class="row cells3">
-              <label class="cell padding10">Stock</label>
+              <label class="cell padding10">Giacenze</label>
               <div class="input-control file cell colspan2" data-role="input">
                 <input type="file" disabled={ missingStore() || missingCatalogFile() } onchange={ stockFileChanged }>
                 <button class="button">

@@ -1,6 +1,7 @@
-require('metro/build/css/metro.min.css!')
-require('metro/build/css/metro-icons.min.css!')
-require('metro/build/js/metro.min.js')
+require('metro/css/metro.css!')
+require('metro/css/metro-icons.css!')
+window.jQuery = require('jquery')
+require('metro/js/metro')
 
 var riot = window.riot = require('riot')
 require('./orders/orders-panel')

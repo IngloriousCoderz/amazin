@@ -162,7 +162,7 @@ module.exports = {
   },
 
   getCachedStocks: function(store, type) {
-    return filesystem.getFiles('cache/', store + '_' + type)
+    return filesystem.getFiles('cache/', store + '_' + type + '_stock')
   },
 
   resetStock: function(store, type, fileName) {
@@ -178,13 +178,13 @@ module.exports = {
   },
 
   createStock: function(store, type, market) {
-    jsonFile.readFile('cache/' + filesystem.getFileName(store + '_' + type, 'json'), function(err, obj) {
+    jsonFile.readFile('cache/' + filesystem.getFileName(store + '_' + type + '_stock', 'json'), function(err, obj) {
       var csv = Papa.unparse(createStock(stores[store], type, obj.data, market), {
         quotes: false,
         delimiter: '\t'
       })
 
-      var filename = filesystem.getFileName('inventario_' + store + '_' + type + '_' + market, 'txt')
+      var filename = filesystem.getFileName('giacenze_' + store + '_' + type + '_' + market, 'txt')
       filesystem.save(csv, filename)
     })
   }

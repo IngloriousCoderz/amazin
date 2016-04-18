@@ -1,5 +1,6 @@
 var moment = require('moment')
 var fs = require('fs')
+window.JSZip = require('jszip')
 var XLSX = require('xlsx')
 var Papa = require('papaparse')
 var jsonFile = require('jsonfile')

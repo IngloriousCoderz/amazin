@@ -65,7 +65,7 @@ module.exports = {
           stockResult.prezzo = price
         }
 
-        filesystem.cache(stockObj, 'centrol_' + type)
+        filesystem.cache(stockObj, 'centrol_' + type + '_stock')
       })
     })
   }
