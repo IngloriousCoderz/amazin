@@ -26,6 +26,7 @@
   "dependencies": {},
   "devDependencies": {
     "del": "^2.2.0",
+    "electron-packager": "^7.0.0",
     "electron-prebuilt": "^0.36.5",
     "gulp": "^3.9.0",
     "gulp-jspm": "^0.5.6",
