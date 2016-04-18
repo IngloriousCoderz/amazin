@@ -19,6 +19,14 @@ module.exports = {
     return false
   },
 
+  getFieldNames: function() {
+    return {
+      barcode: 'barcode',
+      quantity: ['q.tà disp.', 'q,tà disp.'],
+      price: ' prezzo '
+    }
+  },
+
   getFields: function(item) {
     return {
       barcode: item['barcode'],
@@ -28,9 +36,8 @@ module.exports = {
   },
 
   getSku: function(barcode, type) {
-    // return barcode + '_NADA' + (type === 'dvd' ? 'OK' : '')
     return barcode + '_NADA' + type.toUpperCase()
   },
 
-  onCached: function(type) {}
+  hasCatalogAndStock: false
 }

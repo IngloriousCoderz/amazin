@@ -21,18 +21,28 @@ module.exports = {
     return false
   },
 
-  getFields: function(item) {
+  getFieldNames: function() {
     return {
-      barcode: item['Cod. barre'],
-      quantity: item['Q.ta in stock'],
-      price: item['Pvc'],
-      title: item['Titolo']
+      barcode: 'Cod. barre',
+      quantity: 'Q.ta in stock',
+      price: 'Pvc',
+      title: 'Titolo'
+    }
+  },
+
+  getFields: function(item) {
+    var fieldNames = this.getFieldNames()
+    return {
+      barcode: item[fieldNames.barcode],
+      quantity: item[fieldNames.quantity],
+      price: item[fieldNames.price],
+      title: item[fieldNames.title]
     }
   },
 
   getSku: function(barcode, type) {
-    return barcode + '_TERMINAL' + (type === 'dvd' ? '_DVD' : '')// + 'OK'
+    return barcode + '_TERMINAL' + (type === 'dvd' ? '_DVD' : '')
   },
 
-  onCached: function(type) {}
+  hasCatalogAndStock: false
 }

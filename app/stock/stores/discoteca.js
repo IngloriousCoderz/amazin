@@ -20,48 +20,26 @@ module.exports = {
     return false
   },
 
-  getFields: function(item) {
+  getFieldNames: function() {
     return {
-      barcode: item['ean'],
-      quantity: item['disponibilita'],
-      price: item['prezzo']
+      barcode: 'ean',
+      quantity: 'disponibilita',
+      price: 'prezzo'
+    }
+  },
+
+  getFields: function(item) {
+    var fieldNames = this.getFieldNames()
+    return {
+      barcode: item[fieldNames.barcode],
+      quantity: item[fieldNames.quantity],
+      price: item[fieldNames.price]
     }
   },
 
   getSku: function(barcode, type) {
-    return barcode + '_DISCOTECA'//_' + (type === 'dvd' ? 'DVD' : 'CD')
+    return barcode + '_DISCOTECA'
   },
 
-  onCached: function(type) {
-    jsonFile.readFile('cache/' + filesystem.getFileName('discoteca_stock', 'json'), function(err, stockObj) {
-      jsonFile.readFile('cache/' + filesystem.getFileName('discoteca_catalog', 'json'), function(err, catalogObj) {
-        var prices = {}
-        catalogObj.data.map(function(catalogResult) {
-          var price = catalogResult.prezzo
-          if (price !== undefined) {
-            prices[catalogResult.ean] = price
-          }
-        })
-
-        for (var i = stockObj.data.length - 1; i >= 0; i--) {
-          var stockResult = stockObj.data[i]
-
-          if (stockResult.disponibilita === '0') {
-            stockObj.data.splice(i, 1)
-            continue
-          }
-
-          var price = prices[stockResult.ean]
-          if (price === undefined) {
-            stockObj.data.splice(i, 1)
-            continue
-          }
-
-          stockResult.prezzo = price
-        }
-
-        filesystem.cache(stockObj, 'discoteca_' + type + '_stock')
-      })
-    })
-  }
+  hasCatalogAndStock: true
 }

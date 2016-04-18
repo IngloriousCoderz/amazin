@@ -143,7 +143,34 @@ function resetStock(store, type, data) {
 
 module.exports = {
   onCached: function(store, type) {
-    stores[store].onCached(type)
+    if (!stores[store].hasCatalogAndStock) {
+      return
+    }
+
+    var fieldNames = stores[store].getFieldNames()
+
+    jsonFile.readFile('cache/' + filesystem.getFileName(store + '_' + type + '_stock', 'json'), function(err, stockObj) {
+      jsonFile.readFile('cache/' + filesystem.getFileName(store + '_' + type + '_catalog', 'json'), function(err, catalogObj) {
+        var prices = {}
+        catalogObj.data.forEach(function(item) {
+          var price = item[fieldNames.price]
+          if (price !== undefined) {
+            prices[item[fieldNames.barcode]] = price
+          }
+        })
+
+        var stockItems = stockObj.data
+        var stockItems = stockItems.filter(function(item) {return item[fieldNames.quantity] !== '0'})
+        stockItems = stockItems.filter(function(item) {return prices[item[fieldNames.barcode]] !== undefined})
+        stockItems = stockItems.map(function(item) {
+          item[fieldNames.price] = prices[item[fieldNames.barcode]]
+          return item
+        })
+        stockObj.data = stockItems
+
+        filesystem.cache(stockObj, store + '_' + type + '_stock')
+      })
+    })
   },
 
   getCachedStocks: function(store, type) {
