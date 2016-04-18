@@ -25,6 +25,14 @@ module.exports = {
     return false
   },
 
+  getFieldNames: function() {
+    return {
+      barcode: 'ean13',
+      quantity: 'qta',
+      price: 'prezzo'
+    }
+  },
+
   getFields: function(item) {
     return {
       barcode: item['ean13'],

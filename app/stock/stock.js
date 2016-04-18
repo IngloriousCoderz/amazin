@@ -16,24 +16,6 @@ var stores = {
   centrol: centrol
 }
 
-function addHeader(stock) {
-  stock.push([
-    'sku',
-    'product-id',
-    'product-id-type',
-    'price',
-    'minimum-seller-allowed-price',
-    'maximum-seller-allowed-price',
-    'item-condition',
-    'quantity',
-    'add-delete',
-    'item-note',
-    'expedited-shipping',
-    'will-ship-internationally',
-    'fulfillment-center-id'
-  ])
-}
-
 function cleanBarcode(barcode) {
   var barcodes = /\d+/.exec(barcode)
   if (barcodes === null) return null
@@ -60,47 +42,50 @@ function getQuantity(quantity, type) {
   return quantity
 }
 
-function addItem(stock, fields, values, store, type) {
-  var barcode = fields.barcode
-  var sku = store.getSku(barcode, type) + moment().format('MMM').toUpperCase()
-
-  barcode = values.barcode !== '' ? values.barcode : barcode
-
-  stock.push([
-    sku,
-    barcode,
-    values.productIdType,
-    values.price,
-    values.minimumSellerAllowedPrice,
-    values.maximumSellerAllowedPrice,
-    values.itemCondition,
-    values.quantity,
-    values.addDelete,
-    values.itemNote,
-    values.expeditedShipping,
-    values.willShipInternationally,
-    values.fulfillmentCenterId
-  ])
-}
-
 function createStock(store, type, data, market) {
   var stock = []
-  addHeader(stock)
+
+  stock.push([
+    'sku',
+    'product-id',
+    'product-id-type',
+    'price',
+    'minimum-seller-allowed-price',
+    'maximum-seller-allowed-price',
+    'item-condition',
+    'quantity',
+    'add-delete',
+    'item-note',
+    'expedited-shipping',
+    'will-ship-internationally',
+    'fulfillment-center-id'
+  ])
 
   data.forEach(function(item, index) {
     var fields = store.getFields(item)
-    fields.barcode = cleanBarcode(fields.barcode)
+    var barcode = fields.barcode = cleanBarcode(fields.barcode)
 
     if (isBlacklisted(store, fields)) return
 
+    var quantity = fields.quantity
+    if (isNaN(quantity) || quantity <= 0) return
+    quantity = getQuantity(quantity, type)
+
+    var price = fields.price
+    price = price.replace(',', '.')
+    price = price.replace(/[^\d\.]/g, '') * store.getMarkup(type)
+    price = price.toFixed(2)
+    price = markets[market].formatPrice(price)
+
     var values = {
-      barcode: fields.barcode,
+      sku: store.getSku(barcode, type) + moment().format('MMM').toUpperCase(),
+      barcode: barcode,
       productIdType: 4,
-      price: fields.price,
+      price: price,
       minimumSellerAllowedPrice: '',
       maximumSellerAllowedPrice: '',
       itemCondition: 11,
-      quantity: fields.quantity,
+      quantity: quantity,
       addDelete: 'a',
       itemNote: markets[market].itemNote,
       expeditedShipping: markets[market].expeditedShipping,
@@ -108,18 +93,21 @@ function createStock(store, type, data, market) {
       fulfillmentCenterId: ''
     }
 
-    var quantity = values.quantity
-    if (isNaN(quantity) || quantity <= 0) return
-    values.quantity = getQuantity(quantity, type)
-
-    var price = values.price
-    price = price.replace(',', '.')
-    price = price.replace(/[^\d\.]/g, '') * store.getMarkup(type)
-    price = price.toFixed(2)
-    price = markets[market].formatPrice(price)
-    values.price = price
-
-    addItem(stock, fields, values, store, type)
+    stock.push([
+      values.sku,
+      values.barcode,
+      values.productIdType,
+      values.price,
+      values.minimumSellerAllowedPrice,
+      values.maximumSellerAllowedPrice,
+      values.itemCondition,
+      values.quantity,
+      values.addDelete,
+      values.itemNote,
+      values.expeditedShipping,
+      values.willShipInternationally,
+      values.fulfillmentCenterId
+    ])
   })
 
   return stock
@@ -127,30 +115,27 @@ function createStock(store, type, data, market) {
 
 function resetStock(store, type, data) {
   var stock = []
-  addHeader(stock)
+
+  stock.push([
+    'sku',
+    'quantity',
+  ])
 
   data.forEach(function(item, index) {
     var fields = store.getFields(item)
-    fields.barcode = cleanBarcode(fields.barcode)
+    var barcode = fields.barcode = cleanBarcode(fields.barcode)
 
     if (isBlacklisted(store, fields)) return
 
     var values = {
-      barcode: '',
-      productIdType: '',
-      price: '',
-      minimumSellerAllowedPrice: '',
-      maximumSellerAllowedPrice: '',
-      itemCondition: '',
-      quantity: 0,
-      addDelete: '',
-      itemNote: '',
-      expeditedShipping: '',
-      willShipInternationally: '',
-      fulfillmentCenterId: ''
+      sku: store.getSku(barcode, type) + moment().format('MMM').toUpperCase(),
+      quantity: 0
     }
 
-    addItem(stock, fields, values, store, type)
+    stock.push([
+      values.sku,
+      values.quantity
+    ])
   })
 
   return stock
