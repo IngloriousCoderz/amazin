@@ -7,13 +7,15 @@ var nada = require('./stores/nada')
 var terminal = require('./stores/terminal')
 var discoteca = require('./stores/discoteca')
 var centrol = require('./stores/centrol')
+var vario = require('./stores/vario')
 var markets = require('./markets')
 
 var stores = {
   nada: nada,
   terminal: terminal,
   discoteca: discoteca,
-  centrol: centrol
+  centrol: centrol,
+  vario: vario
 }
 
 function cleanBarcode(barcode) {

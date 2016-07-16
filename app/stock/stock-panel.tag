@@ -16,6 +16,7 @@
                 <option value="terminal">Terminal</option>
                 <option value="discoteca">Discoteca Laziale</option>
                 <option value="centrol">Centro Libri</option>
+                <option value="vario">Vario</option>
               </select>
             </div>
           </div>

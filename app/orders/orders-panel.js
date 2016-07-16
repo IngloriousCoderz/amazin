@@ -17,4 +17,4 @@ riot.tag2('orders-panel', '<div class="panel"> <div class="heading"> <span class
   this.shippingConfirmationClicked = function(event) {
     orders.createShippingConfirmation()
   }.bind(this)
-}, '{ }');
+});

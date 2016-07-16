@@ -10,6 +10,7 @@
   "scripts": {
     "postinstall": "jspm install",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "riot": "riot app",
     "start": "electron .",
     "bundle": "electron-packager ./ amazin --platform=win32 --arch=ia32 --version=0.36.5 --overwrite"
   },
@@ -32,7 +33,8 @@
     "gulp-jspm": "^0.5.6",
     "gulp-load-plugins": "^1.2.0",
     "gulp-sourcemaps": "^1.6.0",
-    "jspm": "^0.16.25"
+    "jspm": "^0.16.25",
+    "riot-cli": "^2.6.1"
   },
   "jspm": {
     "directories": {
