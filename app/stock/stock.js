@@ -192,7 +192,8 @@ module.exports = {
   },
 
   createStock: function(store, type, market) {
-    jsonFile.readFile('cache/' + filesystem.getFileName(store + '_' + type + '_stock', 'json'), function(err, obj) {
+    var stock = this.getCachedStocks(store, type)[0]
+    jsonFile.readFile('cache/' + stock, function(err, obj) {
       var csv = Papa.unparse(createStock(stores[store], type, obj.data, market), {
         quotes: false,
         delimiter: '\t'

@@ -12,7 +12,7 @@ function isExcel(file) {
 
 module.exports = {
   getFileName: function(name, type) {
-    return name + '_' + moment().format('YYYY-MM-DD') + '.' + type
+    return name + '_' + moment().format('YYYY-MM-DDTHH:mm') + '.' + type
   },
 
   getFiles: function(dir, prefix) {

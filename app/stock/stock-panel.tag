@@ -62,7 +62,7 @@
             <legend>Azzera precedente</legend>
             <div class="input-control select cell colspan2 no-margin-left">
               <select onchange={ previousStockSelected }>
-                <option value="" selected={ isPreviousStock('') }>Scegli una data...</option>
+                <option value="" selected={ isPreviousStock('') }>Scegli una versione...</option>
                 <option each={ stock in getCachedStocks() } value={ stock.fileName } selected={ isPreviousStock(stock.fileName) }>{ stock.date }</option>
               </select>
             </div>
@@ -138,7 +138,7 @@
   }
 
   missingType() {
-    return this.isCurrentType('')
+    return !this.isCurrentStore('vario') && this.isCurrentType('')
   }
 
   missingPreviousStock() {
@@ -199,8 +199,9 @@
 
   getCachedStocks() {
     return stock.getCachedStocks(this.store, this.type).map(function(stock) {
+      var leftIndex = stock.indexOf('T') > 0 ? -21 : -15
       return {
-        date: stock.slice(-15, -5),
+        date: stock.slice(leftIndex, -5).replace('T', ' '),
         fileName: stock
       }
     })
