@@ -1,3 +1,13 @@
+var BARCODE_BLACKLIST = [
+  '8718526041064',
+  '8718526040357',
+  '8718526040364',
+  '8718526040272',
+  '8718526041040',
+  '8718526040289',
+  '8718526040357'
+]
+
 var TITLE_BLACKLIST = [
   'ASSORTIMENTO',
   'ASSORTITI',
@@ -12,6 +22,13 @@ module.exports = {
   },
 
   isBlacklisted: function(fields) {
+    var barcode = fields.barcode
+    if (barcode === null) return true
+    BARCODE_BLACKLIST.forEach(function(stopword, index) {
+      if (barcode.toLowerCase().indexOf(stopword.toLowerCase()) >= 0) {
+        return true
+      }
+    })
     var title = fields.title
     TITLE_BLACKLIST.forEach(function(stopword, index) {
       if (title.toLowerCase().indexOf(stopword.toLowerCase()) >= 0) {
