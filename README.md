@@ -1,32 +1,27 @@
 # amazin
-Converts spreadsheets and csv to Amazon's format.
 
-## Prerequisites
+> Converts spreadsheets and csv to Amazon's format.
 
-Make sure the following prerequisites are satisfied prior execution:
+#### Build Setup
 
-* npm (https://docs.npmjs.com/getting-started/installing-node)
-* jspm (npm install -g jspm)
-* electron packager (npm install -g electron-packager)
-
-## Installation and usage
-
-Just execute these commands from a shell:
-
-```
-git clone https://github.com/IngloriousCoderz/amazin.git
-cd amazin
+```bash
+# install dependencies
 npm install
-jspm install
-npm start
+
+# serve with hot reload at localhost:9080
+npm run dev
+
+# build electron application for production
+npm run build
+
+# run unit & end-to-end tests
+npm test
+
+
+# lint all JS/Vue component files in `src/`
+npm run lint
 ```
 
-## Packaging
+---
 
-In order to package for a specific OS (this project is configured for Windows) execute the following commands:
-
-```
-npm install -g electron-packager
-npm run bundle
-```
-
+This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
