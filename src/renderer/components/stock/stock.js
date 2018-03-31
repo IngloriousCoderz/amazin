@@ -17,12 +17,10 @@ export async function onCached(store, type) {
   const fieldNames = stores[store].getFieldNames()
 
   try {
-    const stockObj = await readJson(
-      `cache/${fs.getFilename(`${store}_${type}_stock`, 'json')}`
-    )
-    const catalogObj = await readJson(
-      `cache/${fs.getFilename(`${store}_${type}_catalog`, 'json')}`
-    )
+    const [stockObj, catalogObj] = await Promise.all([
+      readJson(`cache/${fs.getFilename(`${store}_${type}_stock`, 'json')}`),
+      readJson(`cache/${fs.getFilename(`${store}_${type}_catalog`, 'json')}`)
+    ])
 
     const prices = catalogObj.data.reduce((prices, item) => {
       const price = item[fieldNames.price]
@@ -54,14 +52,9 @@ export function getCachedStocks(store, type) {
 export async function resetStock(store, type, stockname) {
   try {
     const obj = await readJson(`cache/${stockname}`)
-
-    const csv = Papa.unparse(_resetStock(stores[store], type, obj.data), {
-      quotes: false,
-      delimiter: '\t'
-    })
-
-    const filename = fs.getFilename(`azzeramento_${store}_${type}`, 'txt')
-    fs.save(csv, filename)
+    const results = await _resetStock(stores[store], type, obj.data)
+    const csv = Papa.unparse(results, { quotes: false, delimiter: '\t' })
+    fs.save(csv, fs.getFilename(`azzeramento_${store}_${type}`, 'txt'))
   } catch (err) {
     throw new Error(err)
   }
@@ -71,18 +64,9 @@ export async function createStock(store, type, market) {
   const stockname = getCachedStocks(store, type)[0]
   try {
     const obj = await readJson(`cache/${stockname}`)
-    const stock = await _createStock(stores[store], type, obj.data, market)
-
-    const csv = Papa.unparse(stock, {
-      quotes: false,
-      delimiter: '\t'
-    })
-
-    const filename = fs.getFilename(
-      `giacenze_${store}_${type}_${market}`,
-      'txt'
-    )
-    fs.save(csv, filename)
+    const results = await _createStock(stores[store], type, obj.data, market)
+    const csv = Papa.unparse(results, { quotes: false, delimiter: '\t' })
+    fs.save(csv, fs.getFilename(`giacenze_${store}_${type}_${market}`, 'txt'))
   } catch (err) {
     throw new Error(err)
   }

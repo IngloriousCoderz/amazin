@@ -1,39 +1,32 @@
+import util from 'util'
 import moment from 'moment'
 import Papa from 'papaparse'
 import jsonFile from 'jsonfile'
 
 import * as fs from '@/service/filesystem'
 
-export function createSalesList() {
-  jsonFile.readFile('cache/' + fs.getFilename('orders', 'json'), (err, obj) => {
-    if (err) {
-      throw new Error(err)
-    }
+const readJson = util.promisify(jsonFile.readFile)
 
-    const csv = Papa.unparse(_createSalesList(obj.data), {
-      quotes: true,
-      delimiter: ''
-    })
-
-    const filename = fs.getFilename('elenco-vendite', 'csv')
-    fs.save(csv, filename)
-  })
+export async function createSalesList() {
+  try {
+    const obj = await readJson(`cache/${fs.getFilename('orders', 'json')}`)
+    const results = await _createSalesList(obj.data)
+    const csv = Papa.unparse(results, { quotes: true, delimiter: '' })
+    fs.save(csv, fs.getFilename('elenco-vendite', 'csv'))
+  } catch (err) {
+    throw new Error(err)
+  }
 }
 
-export function createShippingConfirmation() {
-  jsonFile.readFile('cache/' + fs.getFilename('orders', 'json'), (err, obj) => {
-    if (err) {
-      throw new Error(err)
-    }
-
-    const csv = Papa.unparse(_createShippingConfirmation(obj.data), {
-      quotes: false,
-      delimiter: '\t'
-    })
-
-    const filename = fs.getFilename('conferma-spedizioni', 'txt')
-    fs.save(csv, filename)
-  })
+export async function createShippingConfirmation() {
+  try {
+    const obj = await readJson(`cache/${fs.getFilename('orders', 'json')}`)
+    const results = await _createShippingConfirmation(obj.data)
+    const csv = Papa.unparse(results, { quotes: false, delimiter: '\t' })
+    fs.save(csv, fs.getFilename('conferma-spedizioni', 'txt'))
+  } catch (err) {
+    throw new Error(err)
+  }
 }
 
 function _createSalesList(data) {
