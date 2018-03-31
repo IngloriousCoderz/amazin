@@ -15,6 +15,11 @@
         <md-icon>local_grocery_store</md-icon>
         <router-link to="stock" class="md-list-item-text">Inventario</router-link>
       </md-list-item>
+
+      <md-list-item>
+        <md-icon>block</md-icon>
+        <router-link to="blacklist" class="md-list-item-text">Blacklist</router-link>
+      </md-list-item>
     </md-list>
   </md-app-drawer>
 

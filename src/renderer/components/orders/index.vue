@@ -26,7 +26,7 @@ export default {
   methods: {
     fileChanged(event) {
       const [file] = event.target.files
-      fs.read(file, results => fs.cache(results, 'orders'))
+      fs.read(file).then(results => fs.cache(results, 'orders'))
     },
 
     salesListClicked() {

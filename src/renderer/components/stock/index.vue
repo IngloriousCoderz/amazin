@@ -171,16 +171,16 @@ export default {
       const [file] = event.target.files
       this.type = this.getTypeFromFile(file)
       const name = `${this.store}_${this.type}_catalog`
-      fs.read(file, results => fs.cache(results, name))
+      fs.read(file).then(results => fs.cache(results, name))
     },
 
     stockFileChanged(event) {
       const [file] = event.target.files
       this.type = this.getTypeFromFile(file)
       const name = `${this.store}_${this.type}_stock`
-      fs.read(file, results =>
-        fs.cache(results, name, () => stock.onCached(this.store, this.type))
-      )
+      fs.read(file)
+        .then(results => fs.cache(results, name))
+        .then(() => stock.onCached(this.store, this.type))
     },
 
     newStockClicked(market) {

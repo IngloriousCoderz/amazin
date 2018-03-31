@@ -1,9 +1,10 @@
-import moment from 'moment'
 import fs from 'fs'
+import util from 'util'
 import XLSX from 'xlsx'
 import Papa from 'papaparse'
 import jsonFile from 'jsonfile'
 import FileSaver from 'file-saver'
+import moment from 'moment'
 
 const EXCEL_FILES = {
   XLSX: {
@@ -15,6 +16,8 @@ const EXCEL_FILES = {
     extension: '.xls'
   }
 }
+
+const writeJson = util.promisify(jsonFile.writeFile)
 
 export function getFilename(name, type) {
   return `${name}_${moment().format('YYYY-MM-DDTHH:mm')}.${type}`
@@ -28,49 +31,43 @@ export function getFiles(dir, prefix) {
     .reverse()
 }
 
-export function read(file, onRead) {
-  if (isExcel(file)) {
-    const reader = new FileReader()
-    reader.onload = e => {
-      const data = e.target.result
-      const { Sheets, SheetNames } = XLSX.read(data, { type: 'binary' })
-      const csv = XLSX.utils.sheet_to_csv(Sheets[SheetNames[0]])
-      const result = Papa.parse(csv, {
-        header: true,
-        dynamicTyping: false,
-        skipEmptyLines: true
-      })
-      onRead(result)
-    }
-    reader.readAsBinaryString(file)
-    return
-  }
-
-  parse(file, onRead)
-}
-
-export function parse(file, onComplete) {
-  Papa.parse(file, {
-    header: true,
-    dynamicTyping: false,
-    skipEmptyLines: true,
-    encoding: 'iso-8859-1',
-    complete: onComplete,
-    error(error, file, inputElem, reason) {
-      console.error(error, file, inputElem, reason)
-      throw new Error(error)
+export function read(file) {
+  return new Promise(resolve => {
+    if (isExcel(file)) {
+      const reader = new FileReader()
+      reader.onload = e => {
+        const data = e.target.result
+        const { Sheets, SheetNames } = XLSX.read(data, { type: 'binary' })
+        const csv = XLSX.utils.sheet_to_csv(Sheets[SheetNames[0]])
+        const result = Papa.parse(csv, {
+          header: true,
+          dynamicTyping: false,
+          skipEmptyLines: true
+        })
+        resolve(result)
+      }
+      reader.readAsBinaryString(file)
+    } else {
+      parse(file).then(resolve)
     }
   })
 }
 
-export function cache(results, name, onCached) {
-  jsonFile.writeFile(`cache/${getFilename(name, 'json')}`, results, err => {
-    if (err) {
-      throw new Error(err)
-    }
-
-    onCached && onCached()
+export function parse(file) {
+  return new Promise((resolve, reject) => {
+    Papa.parse(file, {
+      header: true,
+      dynamicTyping: false,
+      skipEmptyLines: true,
+      encoding: 'iso-8859-1',
+      complete: resolve,
+      error: reject
+    })
   })
+}
+
+export function cache(results, name) {
+  return writeJson(`cache/${getFilename(name, 'json')}`, results)
 }
 
 export function save(file, name) {

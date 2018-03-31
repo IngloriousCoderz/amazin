@@ -16,6 +16,11 @@ export default new Router({
       component: require('@/components/stock').default
     },
     {
+      path: '/blacklist',
+      name: 'blacklist',
+      component: require('@/components/blacklist').default
+    },
+    {
       path: '*',
       redirect: '/orders'
     }
