@@ -1,0 +1,49 @@
+input,
+select {
+  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  line-height: 1em;
+  vertical-align: baseline;
+  border: none;
+  padding: 0;
+}
+input[type='number'] {
+  text-align: right;
+}
+select {
+  background: transparent;
+  border: none;
+}
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.strong {
+  font-weight: bold;
+}
+.shouted {
+  text-transform: uppercase;
+}
+.title {
+  color: #666699;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+td {
+  height: 1.2em;
+  vertical-align: top;
+}
+.bordered th,
+.bordered td {
+  border: 1px solid black;
+}
+
+.md-menu-content {
+  z-index: 11;
+}

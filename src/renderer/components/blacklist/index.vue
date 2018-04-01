@@ -22,7 +22,7 @@
 import * as fs from '@/service/filesystem'
 
 export default {
-  name: 'Orders',
+  name: 'Blacklist',
 
   data() {
     return {
@@ -31,11 +31,11 @@ export default {
   },
 
   methods: {
-    fileChanged(event) {
+    async fileChanged(event) {
       const [file] = event.target.files
-      fs.read(file)
-        .then(results => fs.cache(results, 'blacklist'))
-        .then(() => (this.blacklistUpdated = true))
+      const results = await fs.read(file)
+      await fs.cache(results, 'blacklist')
+      this.blacklistUpdated = true
     }
   }
 }

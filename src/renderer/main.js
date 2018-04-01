@@ -8,6 +8,7 @@ import 'vue-material/dist/theme/default.css'
 import App from './App'
 import router from './router'
 import store from './store'
+import './assets/style.css'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.use(VueMaterial)

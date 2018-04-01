@@ -17,8 +17,13 @@
       </md-list-item>
 
       <md-list-item>
-        <md-icon>block</md-icon>
+        <md-icon>remove_shopping_cart</md-icon>
         <router-link to="blacklist" class="md-list-item-text">Blacklist</router-link>
+      </md-list-item>
+
+      <md-list-item>
+        <md-icon>receipt</md-icon>
+        <router-link to="invoices" class="md-list-item-text">Fatture</router-link>
       </md-list-item>
     </md-list>
   </md-app-drawer>
