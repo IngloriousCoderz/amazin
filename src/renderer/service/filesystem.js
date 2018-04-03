@@ -19,6 +19,14 @@ const EXCEL_FILES = {
 
 const writeJson = util.promisify(jsonFile.writeFile)
 
+export function init() {
+  try {
+    fs.readdirSync('cache')
+  } catch (e) {
+    fs.mkdirSync('cache')
+  }
+}
+
 export function getFilename(name, type) {
   return `${name}_${moment().format('YYYY-MM-DDTHH:mm')}.${type}`
 }

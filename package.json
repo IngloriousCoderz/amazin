@@ -23,7 +23,7 @@
   },
   "build": {
     "productName": "amazin",
-    "appId": "org.simulatedgreg.electron-vue",
+    "appId": "it.ingloriouscoderz.amazin",
     "directories": {
       "output": "build"
     },

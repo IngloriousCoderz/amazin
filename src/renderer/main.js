@@ -9,11 +9,14 @@ import App from './App'
 import router from './router'
 import store from './store'
 import './assets/style.css'
+import * as fs from './service/filesystem'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.use(VueMaterial)
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
+
+fs.init()
 
 /* eslint-disable no-new */
 new Vue({
