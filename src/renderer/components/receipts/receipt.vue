@@ -1,5 +1,5 @@
 <template>
-  <div id="invoice">
+  <div id="receipt">
     <table>
       <colgroup>
         <col style="width:25%" />
@@ -19,11 +19,11 @@
       <tr>
         <td class="strong">Ricevuta n.</td>
         <td>
-          <input type="number" v-model="invoice.number" />
+          <input type="number" v-model="receipt.number" />
         </td>
         <td/>
         <td>
-          <select v-model="invoice.type" class="strong shouted">
+          <select v-model="receipt.type" class="strong shouted">
             <option value="usato">Usato</option>
             <option value="nuovo">Nuovo</option>
           </select>
@@ -33,7 +33,7 @@
         <td>Data</td>
         <td colspan="3">
           {{formattedDate}}
-          <!-- <input type="date" v-model="invoice.date" /> -->
+          <!-- <input type="date" v-model="receipt.date" /> -->
         </td>
       </tr>
     </table>
@@ -47,7 +47,7 @@
         <th>Importo</th>
       </tr>
 
-      <item v-for="(item, index) in invoice.items" :key="index" :item="item" />
+      <item v-for="(item, index) in receipt.items" :key="index" :item="item" />
 
       <tr>
         <td rowspan="2" colspan="4" class="strong">ES. IVA ART. 36 D.L. 41/95 - REGIME DEL  MARGINE BENI USATI</td>
@@ -71,15 +71,15 @@ import moment from 'moment'
 import Item from './item'
 
 export default {
-  props: ['invoice'],
+  props: ['receipt'],
 
   components: { Item },
 
   mounted() {
-    this.invoice.items = [
-      ...this.invoice.items,
+    this.receipt.items = [
+      ...this.receipt.items,
       ...Array.from(
-        {length: 4 - this.invoice.items.length},
+        {length: 4 - this.receipt.items.length},
         () => ({})
       )
     ]
@@ -87,11 +87,11 @@ export default {
 
   computed: {
     formattedDate() {
-      return moment(this.invoice.date).format('DD/MM/YYYY')
+      return moment(this.receipt.date).format('DD/MM/YYYY')
     },
 
     total() {
-      return this.invoice.items.reduce((sum, item) => (sum += this.amount(item)), 0).toFixed(2)
+      return this.receipt.items.reduce((sum, item) => (sum += this.amount(item)), 0).toFixed(2)
     }
   },
 
@@ -108,12 +108,12 @@ export default {
 </script>
 
 <style scoped>
-#invoice {
+#receipt {
   width: 24em;
   line-height: 1em;
   margin: 0 auto;
 }
-#invoice > table:nth-of-type(1) {
+#receipt > table:nth-of-type(1) {
   table-layout: fixed;
 }
 </style>

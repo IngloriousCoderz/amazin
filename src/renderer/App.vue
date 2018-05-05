@@ -23,7 +23,7 @@
 
       <md-list-item>
         <md-icon>receipt</md-icon>
-        <router-link to="invoices" class="md-list-item-text">Fatture</router-link>
+        <router-link to="receipts" class="md-list-item-text">Ricevute</router-link>
       </md-list-item>
     </md-list>
   </md-app-drawer>

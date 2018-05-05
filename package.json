@@ -22,7 +22,7 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "amazin",
+    "productName": "Amazin",
     "appId": "it.ingloriouscoderz.amazin",
     "directories": {
       "output": "build"

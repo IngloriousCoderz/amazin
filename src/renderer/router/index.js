@@ -21,9 +21,9 @@ export default new Router({
       component: require('@/components/blacklist').default
     },
     {
-      path: '/invoices',
-      name: 'invoices',
-      component: require('@/components/invoices').default
+      path: '/receipts',
+      name: 'receipts',
+      component: require('@/components/receipts').default
     },
     {
       path: '*',
