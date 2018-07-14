@@ -9,18 +9,20 @@
 </template>
 
 <script>
+import { formatNumber } from '@/service/i18n'
+
 export default {
   props: ['item'],
 
   computed: {
     amount() {
       const { quantity, price } = this.item
-      return quantity != null && price != null ? (quantity * price).toFixed(2) : ''
+      return quantity != null && price != null
+        ? formatNumber(quantity * price)
+        : ''
     }
   },
 
-  watch: {
-
-  }
+  watch: {}
 }
 </script>

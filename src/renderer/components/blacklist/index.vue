@@ -11,6 +11,26 @@
       <md-file placeholder="Carica un CSV" @change="fileChanged($event)" />
     </md-field>
 
+    <div>
+      <strong>Esempio:</strong>
+
+      <div class="overflow">
+        <table class="bordered">
+          <tr>
+            <th>sku</th>
+          </tr>
+          <tr>
+            <td>28948042333</td>
+          </tr>
+          <tr>
+            <td>50087334680</td>
+          </tr>
+        </table>
+      </div>
+
+      <small>NB: L'ordine dei campi è irrilevante, il nome sull'header invece deve essere indicato in modo preciso. Campi extra verranno ignorati.</small>
+    </div>
+
     <md-snackbar :md-active.sync="blacklistUpdated">
       <span>Blacklist aggiornata.</span>
     </md-snackbar>

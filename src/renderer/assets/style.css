@@ -3,8 +3,7 @@
   font-style: normal;
   font-weight: 400;
   src: url(./MaterialIcons-Regular.eot); /* For IE6-8 */
-  src: local('Material Icons'),
-    local('MaterialIcons-Regular'),
+  src: local('Material Icons'), local('MaterialIcons-Regular'),
     url(./MaterialIcons-Regular.woff2) format('woff2'),
     url(./MaterialIcons-Regular.woff) format('woff'),
     url(./MaterialIcons-Regular.ttf) format('truetype');
@@ -15,6 +14,7 @@ select {
   font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 14px;
   width: 100%;
+  height: 1.2em;
   box-sizing: border-box;
   line-height: 1em;
   vertical-align: baseline;
@@ -46,10 +46,11 @@ select {
 table {
   width: 100%;
   border-collapse: collapse;
+  white-space: nowrap;
 }
 td {
   height: 1.2em;
-  vertical-align: top;
+  vertical-align: baseline;
 }
 .bordered th,
 .bordered td {
@@ -58,4 +59,8 @@ td {
 
 .md-menu-content {
   z-index: 11;
+}
+
+.overflow {
+  overflow: auto;
 }

@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+import { formatDate, formatNumber } from '@/service/i18n'
 
 import Item from './item'
 
@@ -78,20 +78,19 @@ export default {
   mounted() {
     this.receipt.items = [
       ...this.receipt.items,
-      ...Array.from(
-        {length: 4 - this.receipt.items.length},
-        () => ({})
-      )
+      ...Array.from({ length: 4 - this.receipt.items.length }, () => ({}))
     ]
   },
 
   computed: {
     formattedDate() {
-      return moment(this.receipt.date).format('DD/MM/YYYY')
+      return formatDate(this.receipt.date)
     },
 
     total() {
-      return this.receipt.items.reduce((sum, item) => (sum += this.amount(item)), 0).toFixed(2)
+      return formatNumber(
+        this.receipt.items.reduce((sum, item) => (sum += this.amount(item)), 0)
+      )
     }
   },
 
@@ -100,7 +99,7 @@ export default {
       return String(price.toFixed(2)).replace('.', ',')
     },
 
-    amount({quantity, price}) {
+    amount({ quantity, price }) {
       return quantity != null && price != null ? quantity * price : 0
     }
   }

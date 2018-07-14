@@ -73,9 +73,49 @@
       <md-file placeholder="Catalogo" v-model="catalogFile" @change="catalogFileChanged($event)" />
     </md-field>
 
+    <div v-if="needsCatalogFile">
+      <strong>Esempio:</strong>
+
+      <div class="overflow">
+        <table class="bordered">
+          <tr>
+            <th>ean13</th><th>prezzo</th>
+          </tr>
+          <tr>
+            <td>0886975785322</td><td>14.90</td>
+          </tr>
+          <tr>
+            <td>3259130172607</td><td>12.90</td>
+          </tr>
+        </table>
+      </div>
+
+      <small>NB: L'ordine dei campi è irrilevante, il nome sull'header invece deve essere indicato in modo preciso. Campi extra verranno ignorati.</small>
+    </div>
+
     <md-field>
       <md-file placeholder="Giacenze" v-model="stockFile" :disabled="missingStore || missingCatalogFile" @change="stockFileChanged($event)" />
     </md-field>
+
+    <div>
+      <strong>Esempio:</strong>
+
+      <div class="overflow">
+        <table class="bordered">
+          <tr>
+            <th>ean13</th><th>qta</th>
+          </tr>
+          <tr>
+            <td>9785865478607</td><td>16</td>
+          </tr>
+          <tr>
+            <td>7600000054237</td><td>1</td>
+          </tr>
+        </table>
+      </div>
+
+      <small>NB: L'ordine dei campi è irrilevante, il nome sull'header invece deve essere indicato in modo preciso. Campi extra verranno ignorati.</small>
+    </div>
 
     <md-button class="md-raised" :disabled="missingInput" @click="newStockClicked('it')">IT</md-button>
     <md-button class="md-raised" :disabled="missingInput" @click="newStockClicked('uk')">UK</md-button>
@@ -174,13 +214,13 @@ export default {
       fs.read(file).then(results => fs.cache(results, name))
     },
 
-    stockFileChanged(event) {
+    async stockFileChanged(event) {
       const [file] = event.target.files
       this.type = this.getTypeFromFile(file)
       const name = `${this.store}_${this.type}_stock`
-      fs.read(file)
-        .then(results => fs.cache(results, name))
-        .then(() => stock.onCached(this.store, this.type))
+      const results = await fs.read(file)
+      await fs.cache(results, name)
+      stock.onCached(this.store, this.type)
     },
 
     newStockClicked(market) {

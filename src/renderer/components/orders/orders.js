@@ -36,8 +36,8 @@ function _createSalesList(data) {
     const addr2 = item['ship-address-2']
     const addr3 = item['ship-address-3']
     const city = item['ship-city']
-    const state = item['ship-state']
     const zip = item['ship-postal-code']
+    const state = item['ship-state']
     const country = item['ship-country']
     const phone = item['ship-phone-number']
 

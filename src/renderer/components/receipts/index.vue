@@ -8,6 +8,36 @@
     <md-divider />
 
     <md-card-content>
+      <md-field>
+        <md-file placeholder="Carica un CSV" @change="fileChanged($event)" />
+      </md-field>
+
+      <div>
+        <strong>Esempio:</strong>
+
+        <div class="overflow">
+          <table class="bordered">
+            <tr>
+              <th>number</th><th>type</th><th>date</th><th>price</th>
+            </tr>
+            <tr>
+              <td>123</td><td>usato</td><td>2018-07-14</td><td>10</td>
+            </tr>
+            <tr>
+              <td>124</td><td>nuovo</td><td>2018-07-14</td><td>32.20</td>
+            </tr>
+          </table>
+        </div>
+
+        <small>NB: L'ordine dei campi è irrilevante, il nome sull'header invece deve essere indicato in modo preciso. Campi extra verranno ignorati.</small>
+      </div>
+      
+      <md-button class="md-raised" :disabled="missingReceipts" @click="receiptCreationClicked">Crea ricevute</md-button>
+    </md-card-content>
+
+    <md-divider />
+
+    <md-card-content>
       <div ref="receipts" class="md-layout">
         <div v-for="receipt in receipts" :key="receipt.number" class="md-layout-item receipt">
           <md-button class="md-icon-button md-dense remove-button" @click="onRemoveReceipt(receipt)"><md-icon>highlight_off</md-icon></md-button>
@@ -53,10 +83,11 @@
 </template>
 
 <script>
-import moment from 'moment'
 import html2pdf from 'html2pdf.js'
 
+import * as fs from '@/service/filesystem'
 import Receipt from './receipt'
+import { createReceipts } from './receipts'
 
 export default {
   name: 'Receipts',
@@ -65,6 +96,7 @@ export default {
 
   data() {
     return {
+      missingReceipts: true,
       showDialog: false,
       receipt: {
         number: 1,
@@ -111,8 +143,21 @@ export default {
   },
 
   methods: {
+    async fileChanged(event) {
+      const [file] = event.target.files
+      const results = await fs.read(file)
+      await fs.cache(results, 'receipts')
+      this.missingReceipts = false
+    },
+
+    async receiptCreationClicked() {
+      this.receipts = await createReceipts()
+    },
+
     onRemoveReceipt(receipt) {
-      const index = this.receipts.findIndex(({number}) => number === receipt.number)
+      const index = this.receipts.findIndex(
+        ({ number }) => number === receipt.number
+      )
       this.receipts.splice(index, 1)
     },
 
@@ -134,7 +179,11 @@ export default {
     },
 
     onConfirm() {
-      this.receipts.push(Object.assign({}, this.receipt, {date: moment(this.receipt.date).format('YYYY-MM-DD')}))
+      this.receipts.push(
+        Object.assign({}, this.receipt, {
+          date: new Date()
+        })
+      )
       this.receipt = Object.assign({}, this.receipt, {
         number: parseInt(this.receipt.number) + 1,
         type: 'usato',
